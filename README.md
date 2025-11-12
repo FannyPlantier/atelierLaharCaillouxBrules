@@ -1,4 +1,4 @@
-# Project : Atelier Lahar Cailloux Brules
+# Project : Atelier Lahar Cailloux Brûlés
 End-to-end E-commerce website project, from conception to deployment.
 
 ## Context 
@@ -7,9 +7,17 @@ This project aims to build an e-commerce website "Atelier Lahar Cailloux Brûlé
 ## Functional specifications
 ### Visitor Features
 - visitors can view the ceramist's profile and biography
-- visitors can browse and view detailed pages of ceramic pieces
-- visitors can add pieces to a shopping cart and proceed to checkout
-- visitors can create an account and log in
+- visitors can login / logout
+    - visitors can create and manage their account
+- visitors can buy ceramic pieces online
+    - visitors can add / remove pieces to a shopping cart
+    - visitors can checkout and make payments with different payment methods
+    - visitors can receive order confirmation emails
+    - visitors can follow order status updates
+    - visitors can view their order history
+- visitors can contact the ceramist via a contact form
+
+
 
 ### Admin Features
 - admin can manage product listings (add, edit, delete pieces)
