@@ -26,3 +26,10 @@ This project aims to build an e-commerce website "Atelier Lahar Cailloux Brûlé
 | Order confirmation | System / Customer | Email: Automatic sending of an order confirmation email summarizing the order. Display: Post-payment thank you page. |
 | Order tracking and history | Customer | Client Area: Viewing a list of past orders. Detail: Display of the order status (e.g., "Awaiting Preparation," "Shipped"). |
 | Contact Form | Visitor / Customer | Sending a direct message to the ceramist's email address (or via a secure interface). Required fields: Name, Email, Subject, Message. |
+
+### Back-Office (Administration Interface)
+| Feature | Actor  | Detailed Description |
+| :-------| :----- | :------------------- |
+| Catalog Management | Administrator | CRUD operations on products: Create, Read, Update, Delete. Fields: Name, Description, Price, Stock Quantity, Photos (multiple), Category (if applicable), Status (Available, Sold, Unique Piece),  Images, Weight/Dimensions (for shipping fee calculation). |
+| Order Management | Administrator | Viewing: Dashboard listing all orders (filterable by status, date). Status Update: Ability to update the status (e.g., from "Paid" to "In Preparation," then to "Shipped"). Details: Access to order details (products, customer, addresses, shipping method). |
+| Customer Management | Administrator | Viewing a list of customer accounts (name, email, registration date). Possibility to edit or deactivate an account if necessary. |
