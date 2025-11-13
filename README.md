@@ -14,21 +14,15 @@ This project aims to build an e-commerce website "Atelier Lahar Cailloux Brûlé
   
 
 ## Detailed functional specifications
-### Visitor Features
-- visitors can view the ceramist's profile and biography
-- visitors can login / logout
-    - visitors can create and manage their account
-- visitors can buy ceramic pieces online
-    - visitors can add / remove pieces to a shopping cart
-    - visitors can checkout and make payments with different payment methods
-    - visitors can receive order confirmation emails
-    - visitors can follow order status updates
-    - visitors can view their order history
-- visitors can contact the ceramist via a contact form
-
-
-
-### Admin Features
-- admin can manage product listings (add, edit, delete pieces)
-- admin can view and manage orders
-- admin can manage user accounts
+### Front-Office (Customer Experience)
+| Feature | Actor  | Detailed Description |
+| :-------| :----- | :------------------- |
+| Profile and biography | Visitor | Display a dedicated "The Artisan/The Studio" page presenting the ceramist's background, philosophy, and photos of their work and studio. |
+| Account management | Visitor/Customer | Creation: Registration via email/password. Login/Logout: Secure system. Management: Customers can update their personal information (name, email) and addresses. |
+| Catalog and product page | Visitor | Catalog: Display of pieces in a grid or list (photos, name, price). Product Page: Must include high-resolution photo(s), detailed description, dimensions, materials, price, stock status ("Available," "Sold," "Unique Piece"), and an "Add to Cart" button.|
+| Shopping cart | Visitor / Customer | Customers can add/remove pieces. Display of content summary, quantities, and subtotal. |
+| Checkout process | Customer | Tunnel: Entry/Selection of shipping and billing addresses. Shipping Choice: Display of shipping options and associated fees. |
+| Payment | Customer | Secure payment with multiple methods (e.g., Credit Card, PayPal). Integration with a third-party payment gateway is required. |
+| Order confirmation | System / Customer | Email: Automatic sending of an order confirmation email summarizing the order. Display: Post-payment thank you page. |
+| Order tracking and history | Customer | Client Area: Viewing a list of past orders. Detail: Display of the order status (e.g., "Awaiting Preparation," "Shipped"). |
+| Contact Form | Visitor / Customer | Sending a direct message to the ceramist's email address (or via a secure interface). Required fields: Name, Email, Subject, Message. |
