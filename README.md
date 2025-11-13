@@ -1,10 +1,19 @@
 # Project : Atelier Lahar Cailloux Brûlés
-End-to-end E-commerce website project, from conception to deployment.
+End-to-end E-commerce website project, from conception to deployment and using podman.
 
-## Context 
-This project aims to build an e-commerce website "Atelier Lahar Cailloux Brûlés," for a French artisan ceramist. The site will highlight the ceramist's profile, showcase their pieces, and facilitate online sales.
+## Context and objectives
+### Project obejctives
+This project aims to build an e-commerce website "Atelier Lahar Cailloux Brûlés," for a French artisan ceramist. 
+- Business Goals: Sell unique or limited-edition artisan ceramic pieces online. Establish a professional and artistic online presence.
+- Awareness Objectives: Highlight the ceramist's profile and artistic approach.
+- Technical Objectives: Provide a secure and user-friendly platform for both the customer and the administrator.
 
-## Functional specifications
+### Project Scope
+- Included: Showcase/e-commerce website (Front-Office), Administration Interface (Back-Office), User, Catalog, and Order Management.
+- Excluded: Management of physical stock (the site will manage virtual/logical stock), advanced marketing automation tools (for now).
+  
+
+## Detailed functional specifications
 ### Visitor Features
 - visitors can view the ceramist's profile and biography
 - visitors can login / logout
