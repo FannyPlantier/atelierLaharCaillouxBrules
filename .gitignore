@@ -10,11 +10,13 @@
 *.pem
 
 # ----------------------------------------
-# 2. DONNÉES PERSISTANTES (Volumes)
+# 2. DONNÉES PERSISTANTES (Volumes et binf mount)
 # ----------------------------------------
 
 /volumes/
 /data/
+/prestashop-code/ 
+
 
 # ----------------------------------------
 # 3. FICHIERS TEMPORAIRES ET CACHE DE PRESTASHOP

@@ -1,11 +1,11 @@
-version: '3.8' # Indique la version de la spécification Compose utilisée
+version: '3.8' # Version de la spécification Compose
 
 services:
   # ----------------------------------------------------
   # SERVICE 1: Base de Données (MariaDB)
   # ----------------------------------------------------
   db:
-    image: docker.io/library/mariadb:10.6
+    image: docker.io/library/mariadb:10.6 # Nom d'image complet pour éviter l'erreur Podman
     container_name: lahar-db
     restart: always
     environment:
@@ -15,28 +15,35 @@ services:
       MYSQL_USER: ${DB_USER}
       MYSQL_PASSWORD: ${DB_PASSWORD}
     volumes:
-      - db-data:/var/lib/mysql
+      - db-data:/var/lib/mysql # Volume nommé pour la persistance des données de la DB
     networks:
       - prestashop-net
 
-
-
-# ----------------------------------------------------
-# SERVICE 2: Application PrestaShop
-# ----------------------------------------------------
+  # ----------------------------------------------------
+  # SERVICE 2: Application PrestaShop
+  # ----------------------------------------------------
   prestashop:
     image: docker.io/prestashop/prestashop:latest 
-    container_name: lahar-app # Nom du conteneur
-    depends_on: # Assure que la base de données est démarrée avant l'application
+    container_name: lahar-app
+    depends_on: 
       - db
-    restart: always # Politique de redémarrage
-    ports: # Exposition des ports
-      - "8080:80" # Mappe le port 80 du conteneur au port 8080 de votre machine hôte
+    restart: always 
+    ports: 
+      - "8080:80" # Mapping du port
+    
+    # CORRECTION DE L'ERREUR DE PERMISSION (Option 1: root)
+    user: "0" # <-- AJOUT : Exécute le conteneur en tant que root pour avoir les droits de renommage sur le Bind Mount
+
     environment: # Variables d'environnement pour configurer PrestaShop
-      DB_SERVER: db
+      DB_SERVER: db # Nom du service pour la communication
       DB_USER: ${DB_USER}
       DB_PASSWORD: ${DB_PASSWORD}
       DB_NAME: ${DB_NAME}
+      
+    volumes:
+      # BIND MOUNT pour le développement local et la persistance des fichiers
+      - ./prestashop-code:/var/www/html 
+      
     networks:
       - prestashop-net
 
@@ -45,4 +52,4 @@ volumes: # Définition des volumes nommés
 
 networks: # Définition des réseaux
   prestashop-net:
-    driver: bridge # Le type de réseau standard
+    driver: bridge
