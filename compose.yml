@@ -5,7 +5,7 @@ services:
   # SERVICE 1: Base de Données (MariaDB)
   # ----------------------------------------------------
   db:
-    image: mariadb:10.6
+    image: docker.io/library/mariadb:10.6
     container_name: lahar-db
     restart: always
     environment:
@@ -25,7 +25,7 @@ services:
 # SERVICE 2: Application PrestaShop
 # ----------------------------------------------------
   prestashop:
-    image: prestashop/prestashop:latest # L'image officielle de PrestaShop
+    image: docker.io/prestashop/prestashop:latest 
     container_name: lahar-app # Nom du conteneur
     depends_on: # Assure que la base de données est démarrée avant l'application
       - db
