@@ -1,0 +1,14 @@
+parent: hummingbird
+name: hummingbird-lahar
+display_name: Thème Atelier Lahar - Cailloux Brûlés
+version: 1.0.0
+author:
+    name: "Fyrx"
+    email: "fanny.plantier.rx@gmail.com"
+    url: """
+  meta:
+    compatibility:
+        from: 8.0
+        to: ~
+assets:
+  use_parent_assets: true
