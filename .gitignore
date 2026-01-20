@@ -16,6 +16,7 @@
 /volumes/
 /data/
 /prestashop-code/ 
+!/prestashop-code/themes/hummingbird-lahar/
 
 
 # ----------------------------------------
