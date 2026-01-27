@@ -66,3 +66,26 @@ Analysis: Integration of Google Analytics or an equivalent analysis tool to trac
 
 ### Communication
 Emailing: Use of a reliable transactional email service (for order confirmations, status tracking, etc.).
+
+## Visual identity guidelines
+### Background colors :  
+zinc-950 (main background) : rgb(9, 9, 11)  
+zinc-900 (other sections) : rgb(24, 24, 27)  
+zinc-800 (borders) : rgb(39, 39, 42)..
+
+### Text colors :
+white (main titles) : rgb(255, 255, 255)  
+gray-300 (main text) : rgb(209, 213, 219)  
+gray-400 (descriptive text) : rgb(156, 163, 175)  
+gray-500 (labels) : rgb(107, 114, 128)  
+gray-600 (placeholders) : rgb(75, 85, 99)  
+
+### Contrast colors :
+orange-600 (borders, buttons) : rgb(234, 88, 12)  
+orange-500 (sections, hover) : rgb(249, 115, 22)  
+
+### Colors with opacity :
+orange-600/10 : rgba(234, 88, 12, 0.1)  
+orange-600/30 : rgba(234, 88, 12, 0.3)  
+black/70 : rgba(0, 0, 0, 0.7)  
+black/50 : rgba(0, 0, 0, 0.5)
