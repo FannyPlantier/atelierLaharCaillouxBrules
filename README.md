@@ -1,47 +1,84 @@
 # Project : Atelier Lahar Cailloux Brûlés
-End-to-end E-commerce website project, from conception to deployment using prestashop and podman.
+Showcase website project built with WordPress
 
 ## Context and objectives
-### Project obejctives
-This project aims to build an e-commerce website "Atelier Lahar Cailloux Brûlés," for a French artisan ceramist. 
-- Business Goals: Sell unique or limited-edition artisan ceramic pieces online. Establish a professional and artistic online presence.
-- Awareness Objectives: Highlight the ceramist's profile and artistic approach.
-- Technical Objectives: Provide a secure and user-friendly platform for both the customer and the administrator.
+### Project overwiew
+This project consists in designing and deploying a showcase website for Atelier Lahar – Cailloux Brûlés, a French artisan ceramist.
+The website aims to present the artist’s universe, his work, and his approach, while offering clear and elegant communication channels.
+
+The project covers the entire lifecycle of the website: conception, design, development, configuration, and deployment using WordPress and podman.
+
+### Business Objectives
+- Establish a professional and artistic online presence for the ceramist
+- Promote the artistic identity, craftsmanship, and values of the atelier
+- Showcase ceramic pieces and past creations
+- Facilitate contact with potential clients, galleries, and partners
+
+### Awareness and Communication Objectives
+- Highlight the ceramist’s profile, background, and creative process  
+- Strengthen the brand image of Atelier Lahar  
+- Improve online visibility and accessibility
+
+### Technical Objectives
+- Provide a user-friendly and secure website
+- Allow the administrator to easily manage content without technical knowledge
+- Ensure responsive design and good performance on all devices
 
 ### Project Scope
-- Included: Showcase/e-commerce website (Front-Office), Administration Interface (Back-Office), User, Catalog, and Order Management.
-- Excluded: Management of physical stock (the site will manage virtual/logical stock), advanced marketing automation tools (for now).
-  
+Included :
+- Showcase website (Front-Office)
+- WordPress administration interface (Back-Office)
+- Content management (pages, images, texts)
+- Multilingual support (French, English, Spanish)
+- Contact and communication features
 
-## Detailed functional specifications
-### Front-Office (Customer Experience)
-| Feature | Actor  | Detailed Description |
-| :-------| :----- | :------------------- |
-| Profile and biography | Visitor | Display a dedicated "The Artisan/The Studio" page presenting the ceramist's background, philosophy, and photos of their work and studio. |
-| Account management | Visitor/Customer | Creation: Registration via email/password. Login/Logout: Secure system. Management: Customers can update their personal information (name, email) and addresses. |
-| Catalog and product page | Visitor | Catalog: Display of pieces in a grid or list (photos, name, price). Product Page: Must include high-resolution photo(s), detailed description, dimensions, materials, price, stock status ("Available," "Sold," "Unique Piece"), and an "Add to Cart" button.|
-| Shopping cart | Visitor / Customer | Customers can add/remove pieces. Display of content summary, quantities, and subtotal. |
-| Checkout process | Customer | Tunnel: Entry/Selection of shipping and billing addresses. Shipping Choice: Display of shipping options and associated fees. |
-| Payment | Customer | Secure payment with multiple methods (e.g., Credit Card, PayPal). Integration with a third-party payment gateway is required. |
-| Order confirmation | System / Customer | Email: Automatic sending of an order confirmation email summarizing the order. Display: Post-payment thank you page. |
-| Order tracking and history | Customer | Client Area: Viewing a list of past orders. Detail: Display of the order status (e.g., "Awaiting Preparation," "Shipped"). |
-| Contact Form | Visitor / Customer | Sending a direct message to the ceramist's email address (or via a secure interface). Required fields: Name, Email, Subject, Message. |
-| Social media links | Visitor | Addition of clickable icons (logo) for the ceramist's social media (Instagram, Facebook...). Placement in the Footer and/or Header. Links must open in a new tab. |
+Excluded :
+- Online sales and payment systems (for now)
+- Shopping cart and order management
+- Physical or virtual stock management
+- Advanced marketing automation tools
+
+## Detailed Functional Specifications
+### Front-Office (Visitor Experience)
+|Feature| Actor | Detailed Description |
+|:-----|:------|:---------------------|
+Home page |	Visitor |Presentation of the atelier, artistic universe, and key visuals. Highlights recent creations or featured pieces.
+Profile & biography | Visitor |	Dedicated page “The Artisan / The Studio” presenting the ceramist’s background, philosophy, inspirations, and photos of the studio and creative process.
+Creations / Gallery | Visitor |	Visual showcase of ceramic pieces presented as a gallery or portfolio. Each item includes photos, title, short description, dimensions, materials, and status (e.g. Unique Piece, Sold, Exhibition Piece).
+Creation detail page | Visitor | Detailed page for a specific piece with high-resolution images, description, techniques, materials, and optional availability information (without purchase).
+Static pages | Visitor | Informational pages such as “About”, “Approach”, “Exhibitions”, or “News” managed via WordPress pages.
+Contact form | Visitor | Contact form allowing visitors to send a message directly to the ceramist. Required fields: Name, Email, Subject, Message.
+Social media links | Visitor | Clickable icons linking to social networks (Instagram, Facebook, etc.). Displayed in the header and/or footer. Links open in a new tab.
+
 
 ### Back-Office (Administration Interface)
-| Feature | Actor  | Detailed Description |
-| :-------| :----- | :------------------- |
-| Catalog Management | Administrator | CRUD operations on products: Create, Read, Update, Delete. Fields: Name, Description, Price, Stock Quantity, Photos (multiple), Category (if applicable), Status (Available, Sold, Unique Piece),  Images, Weight/Dimensions (for shipping fee calculation). |
-| Order Management | Administrator | Viewing: Dashboard listing all orders (filterable by status, date). Status Update: Ability to update the status (e.g., from "Paid" to "In Preparation," then to "Shipped"). Details: Access to order details (products, customer, addresses, shipping method). |
-| Customer Management | Administrator | Viewing a list of customer accounts (name, email, registration date). Possibility to edit or deactivate an account if necessary. |
+|Feature| Actor | Detailed Description |
+|:-----|:------|:---------------------|
+Content management | Administrator| Creation, modification, and deletion of pages and posts via WordPress.
+Gallery management | Administrator | Upload and management of images for ceramic pieces (media library, galleries, featured images).
+Creation entries | Administrator | Management of ceramic pieces as custom posts or structured content (title, description, materials, dimensions, status).
+Multilingual content | Administrator | Management of translations for all pages and creations through a multilingual plugin.
+Contact messages | Administrator | Reception of messages sent via the contact form, forwarded by email.
 
-### Multilingual management
-| Feature | Actor  | Detailed Description |
-| :-------| :----- | :------------------- |
-| Supported languages | System | The site must support French (FR), English (EN) and Spanish (ES). |
-| Language selection | Visitor | A language selector (dropdown or flags) must be available in the header or footer, allowing users to switch languages at any time. The selected language should persist throughout the browsing session. |
-| Content translation | System / Administrator | The platform must allow for the full translation of all editable content (product descriptions, static pages, biography) and user interface texts (buttons, error messages, menus). |
-| Back-office management | Administrator | The administrator must be able to enter and manage the different language versions of the content within the administration interface. |
+## Multilingual Management
+### Supported Languages :
+- French (FR)
+- English (EN)
+- Spanish (ES)
+
+### Language Selection :  
+A language selector (dropdown or flags) available in the header or footer
+The selected language persists during navigation.
+
+### Content Translation :  
+All editable content must be translatable:
+- Pages  
+- Creation descriptions
+- Biography and static texts
+Interface elements (menus, buttons, system messages) must be available in all supported languages
+
+### Back-Office Language Management
+The administrator can manage and edit translations directly from the WordPress administration panel
 
 ## Non-functional specifications
 ### Design and User Experience
@@ -49,25 +86,21 @@ This project aims to build an e-commerce website "Atelier Lahar Cailloux Brûlé
 - Responsive Design: The site must be fully functional and aesthetically pleasing on desktops, tablets, and mobiles.
 
 ### Security
-- Protocol: Use of HTTPS (SSL Certificate).
-- Payment: Secure integration with a payment gateway compliant with standards (e.g., PCI DSS).
-- Customer Data: Protection of personal data in accordance with the GDPR.
+- HTTPS protocol (SSL certificate)
+- Protection against common web vulnerabilities
+- Secure handling of contact form data
+- GDPR compliance (privacy policy, consent for contact form)
 
 ### Performance and Scalability
-- Loading: Pages, especially the catalog and product pages (with photos), must load quickly (target < 2 seconds).
-- Hosting: Choose reliable hosting suitable for moderate to growing traffic volume.
-
-## Integrations and Interfaces
-### Payment
-Gateway: Select and integrate a payment solution (e.g., Stripe, PayPal, or a local banking solution).
-
-### Analytics
-Analysis: Integration of Google Analytics or an equivalent analysis tool to track visits, user behavior, and conversions.
-
-### Communication
-Emailing: Use of a reliable transactional email service (for order confirmations, status tracking, etc.).
+- Fast page loading (target < 2 seconds)  
+- Image optimization for galleries
+- Hosting suitable for moderate traffic with scalability options
 
 ## Visual identity guidelines
+### Fonts :  
+Titles : Payrus  
+Main text : Poor Richard
+
 ### Background colors :  
 zinc-950 (main background) : rgb(9, 9, 11)  
 zinc-900 (other sections) : rgb(24, 24, 27)  
