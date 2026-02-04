@@ -7,3 +7,31 @@
  License URI:  http://www.gnu.org/licenses/gpl-2.0.html
 */
 
+:root {
+    /* Background colors */
+    --main-background: #09090b ;       
+    --sections: #18181b;     
+    --borders: #27272a;
+
+    /* text colors */
+    --main-titles: white;
+    --secondary-titles: #ea580c;
+    --main-text: #d1d5db;
+    --descriptive-text: #9ca3af;
+    --labels: #6b7280;
+    --placeholders: #4b5563;
+
+    /* Contrast colors */
+    --button-border-hover: #f97316;
+
+
+    /* Colors with opacity */
+    --orange600-10: #ea580c1a;
+    --orange600-30: #ea580c4d;
+    --black-70: #000000b3;
+    --black-50: #00000080;
+}
+
+body {
+    background-color: var(--main-background);
+}
