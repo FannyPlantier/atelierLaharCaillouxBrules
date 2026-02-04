@@ -5,7 +5,7 @@ services:
   # SERVICE 1: Base de Données (MariaDB)
   # ----------------------------------------------------
   db:
-    image: docker.io/library/mariadb:10.6 # Nom d'image complet pour éviter l'erreur Podman
+    image: docker.io/library/mariadb:10.6
     container_name: lahar-db
     restart: always
     environment:
@@ -15,41 +15,45 @@ services:
       MYSQL_USER: ${DB_USER}
       MYSQL_PASSWORD: ${DB_PASSWORD}
     volumes:
-      - db-data:/var/lib/mysql # Volume nommé pour la persistance des données de la DB
+      - db-data:/var/lib/mysql
     networks:
-      - prestashop-net
+      - wordpress-net
 
   # ----------------------------------------------------
-  # SERVICE 2: Application PrestaShop
+  # SERVICE 2: Application WordPress
   # ----------------------------------------------------
-  prestashop:
-    image: docker.io/prestashop/prestashop:latest 
+  wordpress:
+    image: docker.io/library/wordpress:latest 
     container_name: lahar-app
     depends_on: 
       - db
     restart: always 
     ports: 
-      - "8080:80" # Mapping du port
+      - "8080:80" # Mapping du port (http://localhost:8080)
     
-    # CORRECTION DE L'ERREUR DE PERMISSION (Option 1: root)
-    user: "0" # <-- AJOUT : Exécute le conteneur en tant que root pour avoir les droits de renommage sur le Bind Mount
+    # Conservation du correctif de permission pour le Bind Mount
+    user: "0" 
 
-    environment: # Variables d'environnement pour configurer PrestaShop
-      DB_SERVER: db # Nom du service pour la communication
-      DB_USER: ${DB_USER}
-      DB_PASSWORD: ${DB_PASSWORD}
-      DB_NAME: ${DB_NAME}
+    environment:
+      WORDPRESS_DB_HOST: db # Nom du service de la DB
+      WORDPRESS_DB_USER: ${DB_USER}
+      WORDPRESS_DB_PASSWORD: ${DB_PASSWORD}
+      WORDPRESS_DB_NAME: ${DB_NAME}
+      # Optionnel : Forcer l'URL si besoin
+      # WORDPRESS_CONFIG_EXTRA: |
+      #   define('WP_HOME', 'http://localhost:8080');
+      #   define('WP_SITEURL', 'http://localhost:8080');
       
     volumes:
-      # BIND MOUNT pour le développement local et la persistance des fichiers
-      - ./prestashop-code:/var/www/html 
+      # BIND MOUNT pour le développement (renommé wordpress-code)
+      - ./wordpress-code:/var/www/html 
       
     networks:
-      - prestashop-net
+      - wordpress-net
 
-volumes: # Définition des volumes nommés
+volumes:
   db-data:
 
-networks: # Définition des réseaux
-  prestashop-net:
+networks:
+  wordpress-net:
     driver: bridge

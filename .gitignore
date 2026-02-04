@@ -1,59 +1,65 @@
-# ----------------------------------------
-# 1. SECRETS ET DONNÉES SENSIBLES
-# ----------------------------------------
-
-# Fichier d'environnement
+# ------------------------------------------------------------------------------
+# 1. SECRETS ET CONFIGURATION LOCALE
+# ------------------------------------------------------------------------------
 .env
-
-# Clés de certificat
 *.key
 *.pem
+/wordpress-code/wp-config.php
 
-# ----------------------------------------
-# 2. DONNÉES PERSISTANTES (Volumes et binf mount)
-# ----------------------------------------
+# ------------------------------------------------------------------------------
+# 2. STRUCTURE WORDPRESS (On ignore tout sauf notre travail)
+# ------------------------------------------------------------------------------
+/wordpress-code/*
 
+# Autoriser le dossier wp-content
+!/wordpress-code/wp-content/
+/wordpress-code/wp-content/*
+
+# ------------------------------------------------------------------------------
+# 3. THÈMES : On ignore tout sauf votre thème personnalisé
+# ------------------------------------------------------------------------------
+!/wordpress-code/wp-content/themes/
+/wordpress-code/wp-content/themes/*
+!/wordpress-code/wp-content/themes/lahar/
+
+# ------------------------------------------------------------------------------
+# 4. DOSSIERS SYSTÈME À CONSERVER VIDES (Gestion via .gitkeep)
+# ------------------------------------------------------------------------------
+
+# On ignore le contenu des uploads, mais on garde le dossier grâce au .gitkeep
+!/wordpress-code/wp-content/uploads/
+/wordpress-code/wp-content/uploads/*
+!/wordpress-code/wp-content/uploads/.gitkeep
+
+# Idem pour le cache (utile pour la performance)
+!/wordpress-code/wp-content/cache/
+/wordpress-code/wp-content/cache/*
+!/wordpress-code/wp-content/cache/.gitkeep
+
+# Idem pour les upgrades temporaires
+!/wordpress-code/wp-content/upgrade/
+/wordpress-code/wp-content/upgrade/*
+!/wordpress-code/wp-content/upgrade/.gitkeep
+
+# ------------------------------------------------------------------------------
+# 5. LOGS ET DÉBOGAGE
+# ------------------------------------------------------------------------------
+*.log
+/wordpress-code/wp-content/debug.log
+
+# ------------------------------------------------------------------------------
+# 6. VOLUMES DOCKER ET SYSTÈME
+# ------------------------------------------------------------------------------
 /volumes/
 /data/
-/prestashop-code
-!/prestashop-code/themes/
-/prestashop-code/themes/*
-!/prestashop-code/themes/hummingbird-lahar/
 
-
-# ----------------------------------------
-# 3. FICHIERS TEMPORAIRES ET CACHE DE PRESTASHOP
-# ----------------------------------------
-
-# Cache de compilation Smarty, logs, et fichiers générés par l'application
-/var/cache/*
-!/var/cache/.gitkeep 
-/var/logs/*
-!/var/logs/.gitkeep
-/var/sessions/
-/var/upload/
-/img/tmp/
-/sitemap.xml
-/robots.txt
-
-# Dossier d'installation/administration 
-/install/
-
-# ----------------------------------------
-# 4. FICHIERS SYSTÈME ET LOGICIELS DIVERS
-# ----------------------------------------
-
-# Fichiers de configuration de Podman 
 .podman-history
 .podman-conf
+.DS_Store
+Thumbs.db
+desktop.ini
 
-# Fichiers d'historique et de cache des outils courants
-.DS_Store # macOS
-Thumbs.db # Windows
-ehthumbs.db # Windows
-desktop.ini # Windows
-
-# Fichiers d'éditeur/IDE 
 .vscode/
+.idea/
 *.swp
 *~

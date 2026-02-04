@@ -122,3 +122,6 @@ orange-600/10 : rgba(234, 88, 12, 0.1)
 orange-600/30 : rgba(234, 88, 12, 0.3)  
 black/70 : rgba(0, 0, 0, 0.7)  
 black/50 : rgba(0, 0, 0, 0.5)
+
+## Mockups
+[Home Page Mockup](/mockups/homepage.png)
