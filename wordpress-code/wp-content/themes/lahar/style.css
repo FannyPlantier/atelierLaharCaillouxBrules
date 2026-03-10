@@ -30,9 +30,15 @@
     --orange600-30: #ea580c4d;
     --black-70: #000000b3;
     --black-50: #00000080;
+
+    /* Structure */
+  --gutter: 2%;
+  --nav-gap: 3%;
+  --nav-mobile-width: 55%;
 }
 
 body {
+    margin: 0;
     background-color: var(--main-background);
     color: var(--main-text);
 }
