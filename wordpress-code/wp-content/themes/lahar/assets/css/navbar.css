@@ -1,28 +1,45 @@
+/* --- HEADER GLOBAL --- */
 .site-header {
     width: 100%;
-    background-color: var(--nav-background) !important; /* On rend le header transparent pour que l'image de fond soit visible */
-    border-bottom: 1px solid var(--border);
-    padding: 1% 0; /* Un peu d'air en haut et en bas */
+    background-color: var(--nav-background) !important;
+    border-bottom: 0.1% solid var(--border); /* Remplacé 1px par une valeur infime ou 0.1% */
+    padding: 1% 0;
 }
 
 .header-container {
-    width: 94%; /* On laisse 3% de marge de chaque côté */
+    width: 94%;
     margin: 0 auto;
     display: flex;
     justify-content: space-between;
     align-items: center;
 }
 
+/* --- LOGO (IMAGE + TEXTE) --- */
 .site-logo a {
+    display: flex;           
+    align-items: center;    
     font-family: var(--font-title);
-    font-size: 110%; 
+    font-size: 115%; 
     color: var(--main-title);
     font-weight: 800;
     text-decoration: none;
+    gap: 1%;                /* Espace fluide entre le logo et le texte */
 }
 
+.logo-text:hover {
+    color: var(--secondary-title) !important;
+}
+
+.custom-logo-img {
+    width: 4%;             /* Ajuste ce % selon la taille voulue pour ton icône */
+    height: auto;
+    display: block;
+}
+
+/* --- NAVIGATION --- */
 .main-navigation {
     flex: 1;               
+    display: flex;          /* Ajouté pour s'assurer que le contenu interne s'aligne */
     justify-content: flex-end; 
 }
 
@@ -31,19 +48,21 @@
     list-style: none;
     margin: 0;
     padding: 0;
-    gap: 4%; /* Espace fluide entre les liens */
+    gap: 4%; 
     justify-content: flex-end;
     flex-wrap: nowrap;
+    width: 100%;            /* Force le menu à utiliser l'espace du flex:1 */
 }
 
 .nav-menu li a {
     color: var(--descriptive-text);
     font-family: var(--font-title);
     text-transform: uppercase;
-    font-size: 95%; /* Texte un peu plus petit que le logo */
+    font-size: 95%; 
     font-weight: 600;
     text-decoration: none;
     transition: color 0.3s;
+    white-space: nowrap;    /* Évite que les liens du menu ne cassent sur deux lignes */
 }
 
 .nav-menu li a:hover {

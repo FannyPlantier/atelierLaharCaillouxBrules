@@ -11,7 +11,10 @@
 <header class="site-header">
     <div class="header-container">
         <div class="site-logo">
-            <a href="<?php echo esc_url( home_url( '/' ) ); ?>">Atelier Cailloux Brûlés - Pierre-Nicolas Rauzy</a>
+            <a href="<?php echo esc_url( home_url( '/' ) ); ?>">
+                <img src="<?php echo get_stylesheet_directory_uri(); ?>/assets/images/monogramme.webp" alt="Logo Atelier" class="custom-logo-img">
+                <span class="logo-text">Atelier Cailloux Brûlés - Pierre-Nicolas Rauzy</span>
+            </a>
         </div>
         <nav class="main-navigation">
             <?php
