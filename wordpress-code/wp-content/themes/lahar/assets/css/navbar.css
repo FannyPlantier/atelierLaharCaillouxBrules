@@ -1,0 +1,51 @@
+.site-header {
+    width: 100%;
+    background-color: var(--nav-background) !important; /* On rend le header transparent pour que l'image de fond soit visible */
+    border-bottom: 1px solid var(--border);
+    padding: 1% 0; /* Un peu d'air en haut et en bas */
+}
+
+.header-container {
+    width: 94%; /* On laisse 3% de marge de chaque côté */
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.site-logo a {
+    font-family: var(--font-title);
+    font-size: 110%; 
+    color: var(--main-title);
+    font-weight: 800;
+    text-decoration: none;
+}
+
+.main-navigation {
+    flex: 1;               
+    justify-content: flex-end; 
+}
+
+.nav-menu {
+    display: flex;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    gap: 4%; /* Espace fluide entre les liens */
+    justify-content: flex-end;
+    flex-wrap: nowrap;
+}
+
+.nav-menu li a {
+    color: var(--descriptive-text);
+    font-family: var(--font-title);
+    text-transform: uppercase;
+    font-size: 95%; /* Texte un peu plus petit que le logo */
+    font-weight: 600;
+    text-decoration: none;
+    transition: color 0.3s;
+}
+
+.nav-menu li a:hover {
+    color: var(--secondary-title) !important;
+}

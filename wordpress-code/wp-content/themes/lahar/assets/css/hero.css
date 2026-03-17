@@ -1,0 +1,133 @@
+/* --- SUPERPOSITION DU HEADER --- */
+.home .site-header {
+    position: absolute; 
+    top: 2%;
+    left: 0;
+    width: 100%;
+    z-index: 1000;
+    background: transparent !important;
+    border-bottom: none;
+    padding: 2% 0; 
+}
+
+.home .site-header a {
+    color: #ffffff !important;
+}
+
+/* --- HERO SECTION --- */
+.hero {
+    height: 100vh;
+    width: 100%;
+    position: relative;
+    background-image: url('../images/image_hero.webp'); 
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    margin-top: 0; 
+}
+
+.hero-overlay {
+    position: absolute;
+    top: 0; 
+    left: 0; 
+    width: 100%; 
+    height: 100%;
+    background: rgba(0, 0, 0, 40%);
+    z-index: 1;
+}
+
+/* --- CONTENU DU HERO --- */
+.hero-content {
+    position: relative;
+    z-index: 2;
+    text-align: center;
+    color: #ffffff;
+    width: 90%;
+    font-family: var(--font-title);
+    max-width: 60%;
+}
+
+.hero-badge {
+    display: inline-block;
+    border: 4px solid var(--secondary-title); 
+    color: var(--secondary-title);
+    padding: 2%;
+    margin: 30% 5%;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    margin-bottom: 3%;
+    text-transform: uppercase;
+}
+
+.hero-badge:hover {
+    background-color: var(--orange-10);
+}
+
+.hero-title-container {
+    width: 80%;
+    margin: 0 auto;
+}
+
+.hero-title-svg {
+    width: 100%;
+    height: auto;
+    overflow: visible; /* Important pour ne pas couper les lettres qui dépassent */
+}
+
+.hero-title-svg text {
+    fill: #ffffff;
+    font-family: var(--font-title);
+    font-weight: 800;
+    font-size: 310%; 
+    text-transform: uppercase; 
+    letter-spacing: 1px;
+}
+
+.hero-subtitle {
+    font-size: clamp(90%, 1.5vw, 120%);
+    margin-top: 2%;
+    font-weight: 400;
+    opacity: 90%;
+}
+
+/* --- BOUTON DÉCOUVRIR (SCROLL) --- */
+.hero-scroll {
+    position: absolute;
+    bottom: 5%;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 2;
+}
+
+.hero-scroll a {
+    text-decoration: none;
+    color: #ffffff;
+    font-size: 80%;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15%; /* Espacement relatif */
+}
+
+.arrow-down {
+    width: 15%; /* Largeur basée sur le conteneur du bouton */
+    aspect-ratio: 1 / 1; /* Pour garder un carré parfait sans pixels */
+    border-right: 0.2% solid #ffffff;
+    border-bottom: 0.2% solid #ffffff;
+    transform: rotate(45deg);
+    display: block;
+    margin-top: 5%;
+}
+
+/* --- MOBILE --- */
+@media (max-width: 1000%) { /* Les Media Queries utilisent rarement les % sur la largeur, mais on adapte le contenu à l'intérieur */
+    .hero-title {
+        font-size: 300%;
+    }
+}

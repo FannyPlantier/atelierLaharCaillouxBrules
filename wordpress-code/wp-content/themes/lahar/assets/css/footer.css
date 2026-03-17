@@ -1,0 +1,42 @@
+/* --- FOOTER GLOBAL --- */
+.site-footer {
+    background-color: var(--section);
+    border-top: 1px solid var(--border);
+    padding: 1.5% 0; /* On augmente légèrement le % pour aérer les 2 lignes */
+    width: 100%;
+}
+
+/* --- CONTENEUR FLEX (SUR DEUX LIGNES) --- */
+.footer-content {
+    width: 94%;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column; /* FORCE LE PASSAGE À LA LIGNE */
+    justify-content: center;
+    align-items: center;    /* Centre horizontalement les deux lignes */
+    line-height: 1.5;            
+    font-family: var(--syne); /* Utilise Syne via ta variable */
+    font-size: 80%;         
+    color: var(--descriptive-text);
+    text-align: center;
+}
+
+/* --- STYLE DES TEXTES --- */
+.footer-content span, 
+.footer-content a {
+    font-family: var(--font-title) !important;
+    margin: 0;
+    white-space: nowrap;    
+    letter-spacing: 0.05em;
+    text-decoration: none;
+}
+
+/* --- STYLE DES LIENS MENTIONS LÉGALES --- */
+.mentions-legales a {
+    font-weight: 700;
+    transition: color 0.3s ease;
+}
+
+.mentions-legales a:hover {
+    color: var(--secondary-title);
+}

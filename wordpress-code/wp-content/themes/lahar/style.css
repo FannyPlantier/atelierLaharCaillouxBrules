@@ -7,13 +7,24 @@
  License URI:  http://www.gnu.org/licenses/gpl-2.0.html
 */
 
+/* ================ 1. Fonts Import ================= */
+@import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&display=swap');
+
+@font-face {
+    font-family: 'Chanticl';
+    src: url('assets/fonts/chanticl.woff2') format('woff2');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+
+/* ================ 2. Variables declaration ================= */
 :root {
-    /* Background colors */
-    --main-background: #09090b ;       
+    --main-background: #09090b;  
+    --nav-background: transparent;     
     --section: #18181b;     
     --border: #27272a;
 
-    /* text colors */
     --main-title: white;
     --secondary-title: #ea580c;
     --main-text: #d1d5db;
@@ -21,28 +32,81 @@
     --label: #6b7280;
     --placeholder: #4b5563;
 
-    /* Contrast colors */
     --button-border-hover: #f97316;
 
-
-    /* Colors with opacity */
-    --orange600-10: #ea580c1a;
-    --orange600-30: #ea580c4d;
+    --orange-10: #ea580c1a;
+    --orange-30: #ea580c4d;
     --black-70: #000000b3;
     --black-50: #00000080;
 
-    /* Structure */
-  --gutter: 2%;
-  --nav-gap: 3%;
-  --nav-mobile-width: 55%;
+    --gutter: 2%;
+    --nav-gap: 3%;
+    --nav-mobile-width: 55%;
+
+    --font-main: 'Chanticl', serif;      
+    --font-title: 'Syne', sans-serif;  
+}
+
+/* ================ 3. CSS' base ================= */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    height: 100%;
+    scroll-behavior: smooth;
+    font-size: 100%; 
 }
 
 body {
-    margin: 0;
+    font-family: var(--font-main); 
     background-color: var(--main-background);
     color: var(--main-text);
+    overflow-x: hidden;
+    
+    display: flex;
+    flex-direction: column;
+    min-height: 100%;
 }
 
-h1 {
+main {
+    flex: 1 0 auto;
+    width: 100%;
+    padding: 5% var(--gutter); 
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-title);
     color: var(--main-title);
+    font-weight: 700; 
+    letter-spacing: -0.05em; 
+}
+
+h1 { font-size: 250%; }
+h2 { font-size: 200%; }
+
+.gutenberg-content {
+    background-color: var(--main-background);
+    padding: 5% var(--gutter); 
+    min-height: 50vh;
+}
+
+.container {
+    width: 90%; 
+    max-width: 100%; 
+    margin: 0 auto;
+}
+
+.gutenberg-content p {
+    color: var(--main-text);
+    margin-bottom: 2%; 
+    line-height: 160%; 
+    font-size: 110%;  
 }
