@@ -11,8 +11,6 @@ function lahar_setup() {
     add_theme_support( 'post-thumbnails' );
     add_theme_support( 'menus' );
     
-    // On commente ou supprime la ligne qui retirait le support des modèles
-    // car en mode bloc, WordPress en a besoin.
     remove_theme_support( 'block-templates' ); 
 }
 add_action( 'after_setup_theme', 'lahar_setup' );
@@ -23,6 +21,9 @@ add_action( 'after_setup_theme', 'lahar_setup' );
 function lahar_enqueue_custom_styles() {
     $theme_dir = get_stylesheet_directory();
     $theme_uri = get_stylesheet_directory_uri();
+
+    // 0. FontAwesome
+    wp_enqueue_style( 'font-awesome', 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css', array(), '6.5.1' );
 
     // 1. Style principal
     wp_enqueue_style( 'lahar-main-style', $theme_uri . '/style.css', array(), filemtime($theme_dir . '/style.css') );

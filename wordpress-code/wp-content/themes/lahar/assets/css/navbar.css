@@ -15,6 +15,12 @@
 }
 
 /* --- LOGO (IMAGE + TEXTE) --- */
+.logo-text {
+    text-transform: uppercase;
+    font-size: large;
+    font-weight: 600;
+}
+
 .site-logo a {
     display: flex;           
     align-items: center;    
@@ -23,7 +29,7 @@
     color: var(--main-title);
     font-weight: 800;
     text-decoration: none;
-    gap: 1%;                /* Espace fluide entre le logo et le texte */
+    gap: 1%;               
 }
 
 .logo-text:hover {
@@ -31,7 +37,7 @@
 }
 
 .custom-logo-img {
-    width: 4%;             /* Ajuste ce % selon la taille voulue pour ton icône */
+    width: 3.5%;             /* Ajuste ce % selon la taille voulue pour ton icône */
     height: auto;
     display: block;
 }

@@ -33,24 +33,27 @@
         <div class="hero-overlay"></div>
         <div class="hero-content">
             <div class="hero-badge">
-                <a href="<?php echo get_permalink(22); ?>" class="hero-badge-link">
-                    Céramiques
-                </a>
+                <a href="<?php echo get_permalink(22); ?>" class="hero-badge-link">Céramiques</a>
             </div>
-            <div class="hero-title-container">
-                <svg viewBox="0 0 1200 300" class="hero-title-svg">
-                    <path id="curve" d="M50,250 Q600,20 1150,250" fill="transparent" />                   <text>
-                        <textPath xlink:href="#curve" startOffset="50%" text-anchor="middle">
-                            Atelier Cailloux Brûlés
-                        </textPath>
-                    </text>
-                </svg>
+
+            <div class="hero-main-group">
+                <div class="hero-title-container">
+                    <svg viewBox="0 0 1200 300" class="hero-title-svg">
+                        <path id="curve" d="M50,250 Q600,20 1150,250" fill="transparent" />
+                        <text>
+                            <textPath xlink:href="#curve" startOffset="50%" text-anchor="middle">
+                                Atelier Cailloux Brûlés
+                            </textPath>
+                        </text>
+                    </svg>
+                </div>
+                <p class="hero-subtitle">Créations artisanales, brutes, craquelées et volcaniste</p>
             </div>
-            <p class="hero-subtitle">Créations artisanales, brutes, craquelées et volcaniste</p>
+
             <div class="hero-scroll">
                 <a href="#apropos">
                     <span>DÉCOUVRIR</span>
-                    <span class="arrow-down"></span>
+                    <i class="fa-solid fa-chevron-down fa-beat icone-scroll"></i>                
                 </a>
             </div>
         </div>
