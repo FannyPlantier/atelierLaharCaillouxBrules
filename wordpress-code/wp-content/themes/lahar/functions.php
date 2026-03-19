@@ -45,6 +45,10 @@ function lahar_enqueue_custom_styles() {
     if ( file_exists($footer_path) ) {
         wp_enqueue_style( 'lahar-footer', $theme_uri . '/assets/css/footer.css', array('lahar-main-style'), filemtime($footer_path) );
     }
+
+    //5. Scripts
+    wp_enqueue_script( 'lahar-scripts', get_stylesheet_directory_uri() . '/assets/js/script.js', array(), '1.0.0', true );
+
 }
 // Priorité 20 pour s'assurer que tes styles passent après ceux des blocs par défaut
 add_action( 'wp_enqueue_scripts', 'lahar_enqueue_custom_styles', 20 );

@@ -1,22 +1,7 @@
-/* --- SUPERPOSITION DU HEADER --- */
-.home .site-header {
-    position: absolute; 
-    top: 2%;
-    left: 0;
-    width: 100%;
-    z-index: 1000;
-    background: transparent !important;
-    border-bottom: none;
-    padding: 2% 0; 
-}
-
-.home .site-header a {
-    color: #ffffff !important;
-}
 
 /* --- HERO SECTION --- */
 .hero {
-    height: 100vh;
+    height: 115vh;
     width: 100%;
     position: relative;
     background-image: url('../images/image_hero.webp'); 
@@ -26,8 +11,11 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    overflow: hidden;
+    overflow-x: hidden; 
+    overflow-y: visible;
     margin-top: 0; 
+    margin-bottom: -15vh;
+    z-index: 1;
 }
 
 .hero-overlay {
@@ -36,7 +24,12 @@
     left: 0; 
     width: 100%; 
     height: 100%;
-    background: rgba(0, 0, 0, 40%);
+    background: linear-gradient(
+    to bottom, 
+    rgba(0, 0, 0, 40%) 0%,   /* Tes 40% d'opacité existants en haut */
+    rgba(0, 0, 0, 40%) 60%,  /* On garde l'opacité jusqu'à 60% de la hauteur */
+    var(--main-background) 100% /* Puis on fond vers ta couleur de fond */
+    );
     z-index: 1;
 }
 
@@ -57,11 +50,11 @@
 
 .hero-badge {
     display: inline-block;
-    border: 4px solid var(--secondary-title); 
+    border: 1.5px solid var(--secondary-title); 
     color: var(--secondary-title);
-    padding: 2%;
+    padding: 1.5%;
     margin-top: 26%;
-    font-weight: 700;
+    font-weight: 600;
     letter-spacing: 0.2em;
     text-transform: uppercase;
 }
@@ -90,17 +83,17 @@
 }
 
 .hero-title-svg text {
-    fill: #ffffff;
+    fill: white;
     font-family: var(--font-title);
     font-weight: 800;
-    font-size: 350%; 
+    font-size: 370%; 
 }
 
 .hero-subtitle {
     font-size: clamp(90%, 1.5vw, 120%);
     margin-top: 0;
     font-weight: 400;
-    opacity: 90%;
+    color: white !important;
     z-index: 3;
     position: relative;
     color: var(--main-text);
@@ -109,7 +102,7 @@
 /* --- BOUTON DÉCOUVRIR (SCROLL) --- */
 .hero-scroll {
     position: absolute;
-    bottom: 10%; 
+    bottom: 20%; 
     left: 50%;
     transform: translateX(-50%);
     z-index: 2;
@@ -118,7 +111,7 @@
 
 .hero-scroll a {
     text-decoration: none;
-    color: #ffffff;
+    color: var(--main-text) !important;
     font-size: 100%;
     font-weight: 700;
     letter-spacing: 0.2em;
@@ -134,7 +127,7 @@
 
 /* État normal */
 .icone-scroll {
-    color: #ffffff !important; 
+    color: var(--main-text) !important; 
     transition: color 0.3s ease;
 }
 
@@ -144,7 +137,7 @@
 }
 
 .hero-scroll a:hover {
-    color: var(--secondary-title)
+    color: var(--secondary-title) !important;
 }
 
 /* ==========================================================================
