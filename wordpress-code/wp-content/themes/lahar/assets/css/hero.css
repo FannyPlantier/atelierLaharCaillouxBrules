@@ -143,51 +143,72 @@
 /* ==========================================================================
    RESPONSIVE
    ========================================================================== */
-@media (max-width: 768px) {
+   @media (max-width: 768px) {
     
     .hero {
         height: 100vh; /* On reste sur du 100% de la hauteur */
         margin-bottom: 0; /* Plus de dépassement sur mobile pour simplifier */
+        display: flex; /* Active Flexbox */
+        
+        /* CORRECTION PRINCIPALE : On ne centre plus verticalement. 
+           On place le contenu en haut (flex-start). */
+        justify-content: flex-start; 
+        
+        /* On ajoute un padding pour créer un espace propre sous le header */
+        padding-top: 27vh; 
     }
 
     .hero-content {
         width: 90%;
         max-width: 90%; /* On prend plus de largeur */
-        justify-content: center; /* Centre verticalement */
+        margin: 0 auto; /* Centre horizontalement */
+        display: flex;
+        flex-direction: column;
+        align-items: center; /* Centre les éléments enfants */
     }
 
-    /* --- BADGE --- */
+    /* --- BADGE (Remonté) --- */
     .hero-badge {
-        margin-top: 20%; /* Remonte le badge */
-        padding: 3% 6%; /* Plus grand pour le tactile */
+        /* CORRECTION : On réduit considérablement la marge pour le coller en haut */
+        margin-top: 2vh; 
+        padding: 3%; /* Plus grand pour le tactile */
+        border: solid 2px var(--secondary-title); /* On garde la bordure pour le contraste */
+    }
+
+    .hero-badge-link {
+        font-size: 80% !important;
     }
 
     /* --- TITRE SVG --- */
     .hero-title-container {
         width: 100%; /* Prend toute la largeur */
-        margin-bottom: 10%; /* Espace sous le titre */
+        margin-bottom: 0;
+        margin-top: 5%;
     }
 
     .hero-title-svg {
         width: 100%;
+        height: auto; /* Garde les proportions */
     }
 
     .hero-title-svg text {
         /* Correction : On réduit la taille pour mobile */
-        font-size: 280%; 
+        font-size: 435%; /* Un peu plus petit pour la symétrie */
     }
 
     /* --- SOUS-TITRE --- */
     .hero-subtitle {
-        font-size: 100%; /* Taille standard lisible */
+        font-size: 90%; /* Taille standard lisible */
         line-height: 1.4; /* Plus d'espace entre les lignes */
-        padding: 0 5%; /* Évite de coller aux bords */
+        padding: 0 0 5% 0; 
         text-align: center;
+        width: 70%; /* Évite que le texte ne touche les bords */
     }
 
     /* --- SCROLL --- */
     .hero-scroll {
-        bottom: 10%; /* Remonte le bouton scroll */
+        /* Correction : On descend le bouton scroll pour l'équilibrer par rapport au reste */
+        bottom: 15%; 
     }
 
     .hero-scroll a {

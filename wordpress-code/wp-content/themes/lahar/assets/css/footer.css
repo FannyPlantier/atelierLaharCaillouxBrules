@@ -1,42 +1,75 @@
-/* --- FOOTER GLOBAL --- */
-.site-footer {
+/* ==========================================================================
+   FOOTER - VERSION FINALE (RESSERRÉE + ZOOM)
+   ========================================================================== */
+   .site-footer {
     background-color: var(--section);
-    border-top: 1px solid var(--border);
-    padding: 1.5% 0; /* On augmente légèrement le % pour aérer les 2 lignes */
+    border-top: 2px solid var(--placeholder);
+    padding: 1.5% 0;
     width: 100%;
 }
 
-/* --- CONTENEUR FLEX (SUR DEUX LIGNES) --- */
 .footer-content {
     width: 94%;
     margin: 0 auto;
     display: flex;
-    flex-direction: column; /* FORCE LE PASSAGE À LA LIGNE */
-    justify-content: center;
-    align-items: center;    /* Centre horizontalement les deux lignes */
-    line-height: 1.5;            
-    font-family: var(--syne); /* Utilise Syne via ta variable */
-    font-size: 80%;         
-    color: var(--descriptive-text);
+    flex-direction: column; 
+    align-items: center;
     text-align: center;
 }
 
-/* --- STYLE DES TEXTES --- */
-.footer-content span, 
-.footer-content a {
-    font-family: var(--font-title) !important;
-    margin: 0;
-    white-space: nowrap;    
-    letter-spacing: 0.05em;
-    text-decoration: none;
+/* LIGNE DES RÉSEAUX SOCIAUX */
+.footer-socials {
+    display: flex !important;
+    flex-direction: row !important;
+    flex-wrap: nowrap !important;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    margin-bottom: 1%;
 }
 
-/* --- STYLE DES LIENS MENTIONS LÉGALES --- */
-.mentions-legales a {
+/* TEXTE "SUIVEZ-MOI" */
+.follow {
+    text-transform: uppercase;
+    color: white !important;
+    font-family: var(--font-title) !important;
     font-weight: 700;
+    margin-right: 1% !important; /* Espace réduit entre texte et 1ère icône */
+    white-space: nowrap;
+}
+
+/* LES ICONES (RESSERRÉES + EFFET ZOOM) */
+.footer-socials a.social-link {
+    display: inline-flex;
+    margin: 0 1% !important; /* Écart réduit à 1% pour plus de compacité */
+    text-decoration: none;
+    transition: transform 0.3s ease; /* Transition douce pour le zoom */
+}
+
+.footer-socials i {
+    color: white;
     transition: color 0.3s ease;
 }
 
+/* --- EFFETS AU SURVOL (HOVER) --- */
+.footer-socials a.social-link:hover i,
 .mentions-legales a:hover {
-    color: var(--secondary-title);
+    color: var(--secondary-title) !important; /* Devient orange */
+}
+
+.footer-socials a.social-link:hover {
+    transform: scale(1.2); /* Effet de petit zoom au survol */
+}
+
+/* TEXTES INFÉRIEURS */
+.footer-content span, 
+.footer-content a {
+    font-family: var(--font-title) !important;
+    font-size: 80%;
+    color: var(--descriptive-text);
+    text-decoration: none;
+}
+
+.mentions-legales a {
+    font-weight: 700;
 }

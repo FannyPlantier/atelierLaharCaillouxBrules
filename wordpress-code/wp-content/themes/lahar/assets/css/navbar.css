@@ -97,6 +97,28 @@
     white-space: nowrap;   
 }
 
+@media (min-width: 769px) {
+    /* ICI : On cache le burger sur ordinateur */
+    .menu-toggle {
+        display: none !important;
+    }
+
+    .nav-menu {
+        display: flex;
+        list-style: none;
+        gap: 4vh;
+    }
+
+    .nav-menu li a {
+        font-family: var(--font-title);
+        text-transform: uppercase;
+        font-weight: 600;
+        text-decoration: none;
+        color: var(--main-text) !important;
+        font-size: 1.8vh;
+    }
+}
+
 /* ==========================================================================
    2. BOUTON BURGER (GLOBAL) - GESTION CADRE & CROIX
    ========================================================================== */
