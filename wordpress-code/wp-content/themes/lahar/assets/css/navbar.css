@@ -1,4 +1,6 @@
-/* --- HEADER GLOBAL --- */
+/* ==========================================================================
+   1. HEADER GLOBAL (DESKTOP)
+   ========================================================================== */
 .site-header {
     width: 100%;
     position: fixed;
@@ -52,7 +54,7 @@
 }
 
 .custom-logo-img {
-    width: 3.5%;             /* Ajuste ce % selon la taille voulue pour ton icône */
+    width: 3.5%;            
     height: auto;
     display: block;
 }
@@ -70,7 +72,7 @@
 
 .main-navigation {
     flex: 1;               
-    display: flex;          /* Ajouté pour s'assurer que le contenu interne s'aligne */
+    display: flex;         
     justify-content: flex-end;        
 }
 
@@ -92,6 +94,122 @@
     font-weight: 600;
     text-decoration: none;
     transition: color 0.3s;
-    white-space: nowrap;    /* Évite que les liens du menu ne cassent sur deux lignes */
+    white-space: nowrap;   
 }
 
+/* ==========================================================================
+   2. BOUTON BURGER (GLOBAL) - GESTION CADRE & CROIX
+   ========================================================================== */
+   .menu-toggle {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 0.8vh;
+    width: 5vh !important; 
+    height: 5vh !important;
+    background: transparent;
+    cursor: pointer;
+    z-index: 10001;
+    position: relative;
+    border: 2px solid var(--secondary-title) !important;
+    transition: all 0.3s ease-in-out;
+}
+
+.menu-toggle .bar {
+    width: 70%;
+    height: 0.35vh;
+    background-color: var(--secondary-title);
+    transition: all 0.3s ease-in-out;
+    display: block;
+}
+
+/* --- LOGIQUE DE LA CROIX (SANS CADRE) --- */
+body.menu-opened .menu-toggle {
+    border-color: transparent !important; /* Supprime le cadre orange au clic */
+    transform: rotate(180deg);
+}
+
+body.menu-opened .menu-toggle .bar {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 80%; /* Branches de la croix */
+}
+
+body.menu-opened .menu-toggle .bar:nth-child(1) {
+    /* Centrage absolu + rotation */
+    transform: translate(-50%, -50%) rotate(45deg);
+}
+
+body.menu-opened .menu-toggle .bar:nth-child(2) {
+    opacity: 0;
+}
+
+body.menu-opened .menu-toggle .bar:nth-child(3) {
+    /* Centrage absolu + rotation inverse */
+    transform: translate(-50%, -50%) rotate(-45deg);
+}
+
+/* ==========================================================================
+   4. RESPONSIVE MOBILE (< 768px)
+   ========================================================================== */
+@media (max-width: 768px) {
+    .site-header
+    {
+        padding: 3%;
+    }
+
+    .logo-text {
+        display: none !important;
+    }
+
+    .custom-logo-img {
+        width: 6vh !important;
+    }
+
+    .main-navigation {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100vh;
+        background-color: rgba(0, 0, 0, 98%);
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        opacity: 0;
+        visibility: hidden;
+        transition: opacity 0.4s ease-in-out;
+        z-index: 9999;
+    }
+
+    body.menu-opened .main-navigation {
+        opacity: 1;
+        visibility: visible;
+    }
+
+    /* Menu vertical */
+    .nav-menu {
+        flex-direction: column;
+        list-style: none;
+        width: 80%;
+        gap: 5vh;
+    }
+
+    .nav-menu li a {
+        color: white !important;
+        font-size: 3.5vh;
+        text-decoration: none;
+        font-family: var(--font-title);
+        border-left: 3px solid var(--secondary-title);
+        padding-left: 5%;
+        display: block;
+    }
+
+    /* Empêche le scroll du site quand le menu est ouvert */
+    body.menu-opened {
+        overflow: hidden;
+    }
+}

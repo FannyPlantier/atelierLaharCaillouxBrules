@@ -144,10 +144,53 @@
    RESPONSIVE
    ========================================================================== */
 @media (max-width: 768px) {
-    .hero-title-container {
-        margin-bottom: -12%; /* Plus fort sur mobile */
+    
+    .hero {
+        height: 100vh; /* On reste sur du 100% de la hauteur */
+        margin-bottom: 0; /* Plus de dépassement sur mobile pour simplifier */
     }
+
+    .hero-content {
+        width: 90%;
+        max-width: 90%; /* On prend plus de largeur */
+        justify-content: center; /* Centre verticalement */
+    }
+
+    /* --- BADGE --- */
+    .hero-badge {
+        margin-top: 20%; /* Remonte le badge */
+        padding: 3% 6%; /* Plus grand pour le tactile */
+    }
+
+    /* --- TITRE SVG --- */
+    .hero-title-container {
+        width: 100%; /* Prend toute la largeur */
+        margin-bottom: 10%; /* Espace sous le titre */
+    }
+
+    .hero-title-svg {
+        width: 100%;
+    }
+
+    .hero-title-svg text {
+        /* Correction : On réduit la taille pour mobile */
+        font-size: 280%; 
+    }
+
+    /* --- SOUS-TITRE --- */
+    .hero-subtitle {
+        font-size: 100%; /* Taille standard lisible */
+        line-height: 1.4; /* Plus d'espace entre les lignes */
+        padding: 0 5%; /* Évite de coller aux bords */
+        text-align: center;
+    }
+
+    /* --- SCROLL --- */
     .hero-scroll {
-        margin-top: 15%; /* Plus d'espace sur mobile */
+        bottom: 10%; /* Remonte le bouton scroll */
+    }
+
+    .hero-scroll a {
+        font-size: 90%; /* Un peu plus petit */
     }
 }

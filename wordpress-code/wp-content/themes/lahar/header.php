@@ -16,7 +16,14 @@
                 <span class="logo-text">Atelier Cailloux Brûlés - Pierre-Nicolas Rauzy</span>
             </a>
         </div>
-        <nav class="main-navigation">
+
+        <button class="menu-toggle" aria-controls="primary-menu" aria-expanded="false">
+            <span class="bar"></span>
+            <span class="bar"></span>
+            <span class="bar"></span>
+        </button>
+
+        <nav id="site-navigation" class="main-navigation">
             <?php
             wp_nav_menu( array(
                 'theme_location' => 'primary',
@@ -47,7 +54,7 @@
                         </text>
                     </svg>
                 </div>
-                <p class="hero-subtitle">Créations artisanales, brutes, craquelées et volcaniste</p>
+                <p class="hero-subtitle">Créations artisanales, brutes, craquelées et volcanistes</p>
             </div>
 
             <div class="hero-scroll">
