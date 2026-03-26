@@ -7,7 +7,9 @@
  License URI:  http://www.gnu.org/licenses/gpl-2.0.html
 */
 
-/* ================ 1. Fonts Import ================= */
+/* ==========================================================================
+   1. FONTS IMPORTATION
+   ========================================================================== */
 @import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&display=swap');
 
 @font-face {
@@ -18,8 +20,9 @@
     font-display: swap;
 }
 
-/* ================ 2. Variables declaration ================= */
-:root {
+/* ==========================================================================
+   2. VARIABLES DECLARATION
+   ========================================================================== */:root {
     --main-background: #131316;  
     --nav-background: transparent;     
     --section: #252529;     
@@ -48,8 +51,9 @@
     --font-title: 'Syne', sans-serif;  
 }
 
-/* ================ 3. CSS' base ================= */
-* {
+/* ==========================================================================
+   3. CSS' BASE
+   ========================================================================== */* {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
@@ -94,7 +98,7 @@ h1 {
 
 h2 { 
     font-size: 200%;
-    margin-left: 15%;
+    margin-left: 15% !important;
     padding-left: 3%; 
     padding-top: 0;
     padding-bottom: 0;
@@ -123,22 +127,23 @@ h2 {
     line-height: 160%; 
     font-size: 120%;  
 }
+/* ================ GLOBAL RESPONSIVE DESIGN ================= */
 
+   @media (max-width: 768px) 
+   {
+       .gutenberg-content p {
+           margin: 5% 2%; 
+           font-size: 100% !important;
+           line-height: 1.3;
+       }
+       h2 {
+           margin: 5% 3% !important;
+           font-size: 170%;
+       }
+   }
 
-/* ================= Responsive design ================= */
-@media (max-width: 768px) 
-{
-    .gutenberg-content p {
-        margin: 5% 2%; 
-        font-size: 100% !important;
-        line-height: 1.3;
-    }
-    h2 {
-        margin: 5% 2%;
-    }
-}
 /* ==========================================================================
-   À PROPOS
+   4. À PROPOS SECTION
    ========================================================================== */
 #apropos {
     margin-top: 5%;
@@ -170,7 +175,7 @@ h2 {
     filter: grayscale(0%);
 }
 
-/* ================= Responsive design ================= */
+/* ================= Responsive design à propos  ================= */
    @media (max-width: 768px) 
    {
     #apropos {
@@ -213,5 +218,233 @@ h2 {
 
     .last {
         margin-bottom: 15% !important;
+    }
+}
+
+/* ==========================================================================
+   5. VIDEO SECTION
+   ========================================================================== */
+   .section-focus {
+    width: 100vw;
+    position: relative;
+    left: 50%;
+    right: 50%;
+    margin-left: -50vw;
+    margin-right: -50vw;
+    
+    background-color: var(--section); 
+    padding: 5% 0;             
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+}
+
+.conteneur-interne {
+    width: 90%; 
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start; 
+}
+
+.conteneur-interne h2 {
+    margin-left: 15% !important; /* Ajuste ce % jusqu'à ce que l'alignement soit parfait avec "Contact" */
+    color: var(--secondary-title);
+    border-left: solid 5px var(--secondary-title);
+    padding-left: 3%;
+}
+
+.video-container-r2 {
+    width: 100%;            
+    margin: 5% 0 3% 0; 
+    padding: 1%;         
+    overflow: hidden;
+    border: 1px solid var(--secondary-title);
+    background-color: black; 
+}
+
+.video-container-r2 video {
+    display: block;
+    width: 100% !important;
+    height: auto !important;
+    aspect-ratio: 16 / 9;   
+}
+
+.lien-videos {
+    font-family: var(--font-title) !important;
+    display: flex !important;
+    flex-direction: column !important; 
+    align-items: center !important;    
+    justify-content: center !important;
+    width: 100% !important;
+    margin: 3% 0 !important;
+    clear: both;                     
+}
+.lien-videos a {
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+.lien-videos a:hover{
+    color: var(--secondary-title);
+}
+
+/* ================= Responsive design videos  ================= */
+@media (max-width: 768px) 
+{
+.section-focus {
+    margin-bottom: 10%;
+}
+
+.lien-videos a {
+     margin: 4% 0 5% 0 !important;
+     font-size: 80%;
+ }
+
+ .conteneur-interne h2 {
+    margin-left: 5% !important; /* Ajuste ce % jusqu'à ce que l'alignement soit parfait avec "Contact" */
+    color: var(--secondary-title);
+    border-left: solid 5px var(--secondary-title);
+    padding-left: 3%;
+}
+}
+
+/* ==========================================================================
+   6. CONTACT SECTION (UNIFIÉE)
+   ========================================================================== */
+#contact {
+    margin-top: 5% !important;
+}
+
+.section-contact-globale {
+    margin: 5% auto;
+    width: 90%;
+}
+
+/* --- LE SYSTÈME DE COLONNES --- */
+.colonnes-contact {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 5%;
+}
+
+.col-infos { width: 45% !important; }
+.col-formulaire { width: 50% !important; }
+
+/* --- TEXTES & TITRES --- */
+.sousTitre {
+    color: white;
+    font-size: 180% !important;
+    margin-bottom: 5%;
+}
+
+.texte-intro {
+    margin-left: 0 !important;
+    padding-left: 0 !important;
+    margin-bottom: 8%;
+    padding-bottom: 5%;
+    line-height: 1.6;
+}
+
+/* --- LISTE DE CONTACT (ICONES) --- */
+.item-detail {
+    display: flex;
+    gap: 5%;
+    margin: 5% 0;
+}
+
+.item-detail p{
+    padding-left: 0 !important;
+    margin-left: 0 !important;
+}
+
+.texte-box {
+    width: 100%;
+}
+
+.icone-box {
+    width: 45px;
+    height: 45px;
+    border: 1px solid var(--secondary-title);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: var(--secondary-title);
+    background-color: var(--orange-10);
+}
+
+.label-info {
+    font-size: 75%;
+    font-family: var(--font-title);
+    color: var(--placeholder);
+    display: block;
+}
+
+/* --- FORMULAIRE & ÉQUERRES --- */
+.form-equerre-wrapper {
+    position: relative;
+    width: 100% !important; 
+    padding: 8% !important; /* Padding généreux pour l'effet visuel */
+    background-color: var(--section); 
+    border: 1px solid var(--placeholder);
+}
+
+.fluentform input, .fluentform textarea {
+    background-color: var(--main-background);
+    border: 1px solid var(--placeholder) !important;
+    color: white;
+}
+
+.fluentform input::placeholder, .fluentform textarea::placeholder {
+    color: var(--placeholder) !important;
+}
+
+/* ÉQUERRE HAUT-GAUCHE */
+.form-equerre-wrapper::before {
+    content: "";
+    position: absolute;
+    top: -2.5%;
+    left: -2.5%;
+    width: 10%;
+    height: 10%;
+    min-width: 25px;
+    min-height: 25px;
+    border-top: 4px solid var(--secondary-title) !important;
+    border-left: 4px solid var(--secondary-title) !important;
+}
+
+/* ÉQUERRE BAS-DROITE */
+.form-equerre-wrapper::after {
+    content: "";
+    position: absolute;
+    bottom: -2.5%;
+    right: -2.5%;
+    width: 10%;
+    height: 10%;
+    min-width: 25px;
+    min-height: 25px;
+    border-bottom: 4px solid var(--secondary-title) !important;
+    border-right: 4px solid var(--secondary-title) !important;
+}
+
+/* --- RESPONSIVE DESIGN --- */
+@media (max-width: 768px) {
+    .colonnes-contact {
+        flex-direction: column;
+    }
+    .col-infos, .col-formulaire {
+        width: 100% !important;
+        margin-bottom: 10%;
+    }
+    .sousTitre { 
+        font-size: 180% !important; 
+    }
+
+    .form-equerre-wrapper::before, .form-equerre-wrapper::after {
+        display: none !important;
+    }
+
+    .form-equerre-wrapper {
+        border: solid 1px var(--secondary-title);
     }
 }
