@@ -146,33 +146,26 @@
    @media (max-width: 768px) {
     
     .hero {
-        height: 100vh; /* On reste sur du 100% de la hauteur */
-        margin-bottom: 0; /* Plus de dépassement sur mobile pour simplifier */
-        display: flex; /* Active Flexbox */
-        
-        /* CORRECTION PRINCIPALE : On ne centre plus verticalement. 
-           On place le contenu en haut (flex-start). */
+        height: 100vh;
+        margin-bottom: 0; 
         justify-content: flex-start; 
-        
-        /* On ajoute un padding pour créer un espace propre sous le header */
         padding-top: 27vh; 
     }
 
     .hero-content {
         width: 90%;
-        max-width: 90%; /* On prend plus de largeur */
-        margin: 0 auto; /* Centre horizontalement */
+        max-width: 90%; 
+        margin: 0 auto; 
         display: flex;
         flex-direction: column;
-        align-items: center; /* Centre les éléments enfants */
+        align-items: center; 
     }
 
-    /* --- BADGE (Remonté) --- */
+    /* --- BADGE --- */
     .hero-badge {
-        /* CORRECTION : On réduit considérablement la marge pour le coller en haut */
         margin-top: 2vh; 
-        padding: 3%; /* Plus grand pour le tactile */
-        border: solid 2px var(--secondary-title); /* On garde la bordure pour le contraste */
+        padding: 3%; 
+        border: solid 2px var(--secondary-title);
     }
 
     .hero-badge-link {
@@ -181,37 +174,35 @@
 
     /* --- TITRE SVG --- */
     .hero-title-container {
-        width: 100%; /* Prend toute la largeur */
+        width: 100%;
         margin-bottom: 0;
         margin-top: 5%;
     }
 
     .hero-title-svg {
         width: 100%;
-        height: auto; /* Garde les proportions */
+        height: auto; /
     }
 
     .hero-title-svg text {
-        /* Correction : On réduit la taille pour mobile */
-        font-size: 435%; /* Un peu plus petit pour la symétrie */
+        font-size: 435%;
     }
 
     /* --- SOUS-TITRE --- */
     .hero-subtitle {
-        font-size: 90%; /* Taille standard lisible */
-        line-height: 1.4; /* Plus d'espace entre les lignes */
+        font-size: 90%; 
+        line-height: 1.4; 
         padding: 0 0 5% 0; 
         text-align: center;
-        width: 70%; /* Évite que le texte ne touche les bords */
+        width: 70%; 
     }
 
     /* --- SCROLL --- */
     .hero-scroll {
-        /* Correction : On descend le bouton scroll pour l'équilibrer par rapport au reste */
-        bottom: 15%; 
+        bottom: 10%; 
     }
 
     .hero-scroll a {
-        font-size: 90%; /* Un peu plus petit */
+        font-size: 90%; 
     }
 }

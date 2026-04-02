@@ -1,5 +1,5 @@
 /* ==========================================================================
-   FOOTER - VERSION FINALE (RESSERRÉE + ZOOM)
+   FOOTER 
    ========================================================================== */
    .site-footer {
     background-color: var(--section);
@@ -34,16 +34,16 @@
     color: white !important;
     font-family: var(--font-title) !important;
     font-weight: 700;
-    margin-right: 1% !important; /* Espace réduit entre texte et 1ère icône */
+    margin-right: 1% !important; 
     white-space: nowrap;
 }
 
-/* LES ICONES (RESSERRÉES + EFFET ZOOM) */
+/* LES ICONES */
 .footer-socials a.social-link {
     display: inline-flex;
-    margin: 0 1% !important; /* Écart réduit à 1% pour plus de compacité */
+    margin: 0 1% !important; 
     text-decoration: none;
-    transition: transform 0.3s ease; /* Transition douce pour le zoom */
+    transition: transform 0.3s ease;
 }
 
 .footer-socials i {
@@ -54,11 +54,11 @@
 /* --- EFFETS AU SURVOL (HOVER) --- */
 .footer-socials a.social-link:hover i,
 .mentions-legales a:hover {
-    color: var(--secondary-title) !important; /* Devient orange */
+    color: var(--secondary-title) !important;
 }
 
 .footer-socials a.social-link:hover {
-    transform: scale(1.2); /* Effet de petit zoom au survol */
+    transform: scale(1.2);
 }
 
 /* TEXTES INFÉRIEURS */

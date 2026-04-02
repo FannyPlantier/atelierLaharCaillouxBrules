@@ -346,16 +346,17 @@ h2 {
     line-height: 1.6;
 }
 
-/* --- LISTE DE CONTACT (ICONES) --- */
+/* --- LISTE DE CONTACT --- */
 .item-detail {
     display: flex;
     gap: 5%;
     margin: 5% 0;
 }
 
-.item-detail p{
+.item-detail p {
     padding-left: 0 !important;
     margin-left: 0 !important;
+    line-height: 1.2 !important;
 }
 
 .texte-box {
