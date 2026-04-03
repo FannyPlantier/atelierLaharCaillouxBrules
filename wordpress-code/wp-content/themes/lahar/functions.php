@@ -154,4 +154,4 @@ function lahar_liste_evenements_shortcode() {
     $output .= '</div>';
     return $output;
 }
-add_shortcode('mon_agenda', 'lahar_liste_evenements_shortcode');
+//add_shortcode('mon_agenda', 'lahar_liste_evenements_shortcode');
