@@ -92,20 +92,15 @@ add_action('init', 'lahar_register_events');
    5. SHORTCODE POUR AFFICHER LES ÉVÉNEMENTS
    ========================================================================== */
 function lahar_liste_evenements_shortcode() {
-    $today = date('Ymd');
+    if ( !function_exists('get_field') ) return '';
+
     $args = array(
         'post_type'      => 'evenement',
         'posts_per_page' => -1,
         'meta_key'       => 'eventbeginningdate',
         'orderby'        => 'meta_value_num',
         'order'          => 'ASC',
-        'meta_query'     => array(
-            array(
-                'key'     => 'eventbeginningdate',
-                'compare' => '>=',
-                'value'   => $today,
-            ),
-        ),
+        'post_status'    => 'publish',
     );
 
     $query = new WP_Query($args);
@@ -115,43 +110,65 @@ function lahar_liste_evenements_shortcode() {
         while ($query->have_posts()) {
             $query->the_post();
             
-            $date_debut_raw = get_field('eventbeginningdate');
+            // 1. Récupération des champs
+            $nom_custom     = get_field('eventname');
+            $date_deb_raw   = get_field('eventbeginningdate');
             $date_fin_raw   = get_field('eventenddate');
-            $heure_debut    = get_field('eventbeginningtime');
+            $heure_deb      = get_field('eventbeginningtime');
             $heure_fin      = get_field('eventendtime');
             $details        = get_field('eventdetail');
             $adresse        = get_field('eventaddress');
             $lien           = get_field('eventlink');
 
-            $date_debut = $date_debut_raw ? DateTime::createFromFormat('Ymd', $date_debut_raw)->format('d F Y') : '';
-            $date_fin   = $date_fin_raw ? DateTime::createFromFormat('Ymd', $date_fin_raw)->format('d F Y') : '';
+            $titre = $nom_custom ? $nom_custom : get_the_title();
 
-            $output .= '<article class="event-card" style="width: 48%; margin-bottom: 5%; padding: 3%; border: 1px solid #f0f0f0; box-sizing: border-box;">';
-            if (has_post_thumbnail()) {
-                $output .= '<div style="margin-bottom:15px;">' . get_the_post_thumbnail(get_the_ID(), 'medium_large', array('style' => 'width:100%; height:auto;')) . '</div>';
+            $output .= '<article class="event-card" style="width: 48%; margin-bottom: 5%; padding: 3%; border: 1px solid #f0f0f0; box-sizing: border-box; background:#fff;">';
+            $output .= '<h2 style="margin-top:0;">' . esc_html($titre) . '</h2>';
+
+            // 2. Gestion intelligente des DATES
+            $d_deb = $date_deb_raw ? DateTime::createFromFormat('Ymd', $date_deb_raw) : null;
+            $d_fin = $date_fin_raw ? DateTime::createFromFormat('Ymd', $date_fin_raw) : null;
+
+            if ($d_deb) {
+                $output .= '<p style="margin:5px 0;"><strong>📅 Date :</strong> ';
+                if ($d_fin && $date_deb_raw !== $date_fin_raw) {
+                    $output .= 'Du ' . $d_deb->format('d F Y') . ' au ' . $d_fin->format('d F Y');
+                } else {
+                    $output .= 'Le ' . $d_deb->format('d F Y');
+                }
+                $output .= '</p>';
             }
-            $output .= '<h2 style="margin-top:0;">' . get_the_title() . '</h2>';
-            $output .= '<p style="font-size:0.9em;"><strong>📅 Dates :</strong> Du ' . $date_debut . ' au ' . $date_fin . '</p>';
-            $output .= '<p style="font-size:0.9em;"><strong>⏰ Horaires :</strong> ' . $heure_debut . ' - ' . $heure_fin . '</p>';
-            
-            if($adresse) {
+
+            // 3. Gestion intelligente des HORAIRES
+            if ($heure_deb) {
+                $output .= '<p style="margin:5px 0;"><strong>⏰ Horaire :</strong> ' . esc_html($heure_deb);
+                if ($heure_fin) { $output .= ' - ' . esc_html($heure_fin); }
+                $output .= '</p>';
+            }
+
+            // 4. Gestion de l'ADRESSE (avec tes 2 "d")
+            if ($adresse) {
                 $addr_text = is_array($adresse) ? $adresse['address'] : $adresse;
-                $output .= '<p style="font-size:0.9em;"><strong>📍 Lieu :</strong> ' . $addr_text . '</p>';
+                $output .= '<p style="margin:5px 0;"><strong>📍 Lieu :</strong> ' . esc_html($addr_text) . '</p>';
             }
-            
-            $output .= '<div style="margin: 15px 0; line-height:1.6;">' . nl2br($details) . '</div>';
-            
-            if($lien) {
-                $output .= '<a href="' . $lien . '" target="_blank" style="display:inline-block; background:#000; color:#fff; padding:10px 20px; text-decoration:none;">En savoir plus</a>';
+
+            // 5. DETAILS et LIEN
+            if ($details) {
+                $output .= '<div style="margin-top:15px; line-height:1.6;">' . nl2br(esc_html($details)) . '</div>';
             }
+
+            if ($lien) {
+                $output .= '<a href="' . esc_url($lien) . '" target="_blank" style="display:inline-block; margin-top:15px; background:#000; color:#fff; padding:8px 15px; text-decoration:none;">En savoir plus</a>';
+            }
+
             $output .= '</article>';
         }
         wp_reset_postdata();
     } else {
-        $output .= '<p style="text-align:center; width:100%;">Aucun événement à venir.</p>';
+        $output .= '<p>Aucun événement prévu pour le moment.</p>';
     }
 
     $output .= '</div>';
     return $output;
 }
-//add_shortcode('mon_agenda', 'lahar_liste_evenements_shortcode');
+add_shortcode('mon_agenda', 'lahar_liste_evenements_shortcode');
