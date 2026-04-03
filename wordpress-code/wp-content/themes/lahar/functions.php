@@ -91,47 +91,7 @@ add_action('init', 'lahar_register_events');
 /* ==========================================================================
    5. SHORTCODE POUR AFFICHER LES ÉVÉNEMENTS
    ========================================================================== */
-function lahar_liste_evenements() {
-    $today = date('Ymd');
-    $args = array(
-        'post_type'      => 'evenement',
-        'posts_per_page' => -1,
-        'meta_key'       => 'eventbeginningdate',
-        'orderby'        => 'meta_value_num',
-        'order'          => 'ASC',
-        'meta_query'     => array(
-            array(
-                'key'     => 'eventbeginningdate',
-                'compare' => '>=',
-                'value'   => $today,
-            ),
-        ),
-    );
-
-    $query = new WP_Query($args);
-    $output = '<div class="agenda-grid" style="display: flex; flex-wrap: wrap; gap: 4%; width: 100%;">';
-
-    if ($query->have_posts()) {
-        while ($query->have_posts()) {
-            $query->the_post();
-            $date_debut = get_field('eventbeginningdate');
-            $adresse = get_field('eventaddress');
-            
-            $output .= '<article style="width: 48%; margin-bottom: 5%; padding: 3%; border: 1px solid #eee;">';
-            $output .= '<h2>' . get_the_title() . '</h2>';
-            $output .= '<p><strong>Le :</strong> ' . $date_debut . '</p>';
-            if($adresse) {
-                $output .= '<p><strong>Lieu :</strong> ' . (is_array($adresse) ? $adresse['address'] : $adresse) . '</p>';
-            }
-            $output .= '<div>' . get_the_excerpt() . '</div>';
-            $output .= '</article>';
-        }
-        wp_reset_postdata();
-    } else {
-        $output .= '<p>Aucun événement à venir.</p>';
-    }
-
-    $output .= '</div>';
-    return $output;
+function lahar_test_agenda() {
+    return '<h1 style="color:red; background:yellow; padding:20px;">OUI, LE SHORTCODE FONCTIONNE !</h1>';
 }
-add_shortcode('mon_agenda', 'lahar_liste_evenements');
+add_shortcode('mon_agenda', 'lahar_test_agenda');
