@@ -54,11 +54,36 @@ function lahar_enqueue_custom_styles() {
 add_action( 'wp_enqueue_scripts', 'lahar_enqueue_custom_styles', 20 );
 
 /* ==========================================================================
-   3. NETTOYAGE SÉLECTIF (Optionnel)
+   3. NETTOYAGE SÉLECTIF
    ========================================================================== */
-// On garde Gutenberg, mais on peut quand même retirer les styles par défaut 
-// si tu veux que tes % % soient les seuls maîtres à bord.
 add_action( 'wp_enqueue_scripts', function() {
     // wp_dequeue_style( 'wp-block-library' ); // À décommenter si tu n'utilises aucun bloc WP
     wp_dequeue_style( 'global-styles' );
 }, 100 );
+
+/* ==========================================================================
+   4. DÉCLARATION DES CPT
+   ========================================================================== */
+   // 1. Déclaration du Custom Post Type "Événements"
+function lahar_register_events() {
+    $labels = array(
+        'name'               => 'Événements',
+        'singular_name'      => 'Événement',
+        'add_new'            => 'Ajouter un événement',
+        'all_items'          => 'Tous les événements',
+        'edit_item'          => 'Modifier l\'événement',
+    );
+
+    $args = array(
+        'labels'             => $labels,
+        'public'             => true,
+        'has_archive'        => true,
+        'menu_icon'          => 'dashicons-calendar-alt', // Petite icône calendrier
+        'supports'           => array('title', 'editor', 'thumbnail'), // Titre, texte, image
+        'rewrite'            => array('slug' => 'agenda'),
+        'show_in_rest'       => true, // Important pour l'éditeur Gutenberg
+    );
+
+    register_post_type('evenement', $args);
+}
+add_action('init', 'lahar_register_events');
