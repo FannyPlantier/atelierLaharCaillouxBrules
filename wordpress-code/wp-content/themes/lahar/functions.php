@@ -81,7 +81,7 @@ function lahar_register_events() {
         'menu_icon'          => 'dashicons-calendar-alt', // Petite icône calendrier
         'supports'           => array('title', 'editor', 'thumbnail'), // Titre, texte, image
         'rewrite'            => array('slug' => 'agenda'),
-        'show_in_rest'       => true, // Important pour l'éditeur Gutenberg
+        'show_in_rest'       => true, 
     );
 
     register_post_type('evenement', $args);
@@ -123,18 +123,24 @@ function lahar_liste_evenements_shortcode() {
             $titre = $nom_custom ? $nom_custom : get_the_title();
 
             $output .= '<article class="event-card" style="width: 48%; margin-bottom: 5%; padding: 3%; border: 1px solid #f0f0f0; box-sizing: border-box; background:#fff;">';
-            $output .= '<h2 style="margin-top:0;">' . esc_html($titre) . '</h2>';
-
+            $output .= '<h2 style="margin-top:0; border-left: 5px solid #ff6600; padding-left: 15px; color: #ff6600;">' . esc_html($titre) . '</h2>';
+            
             // 2. Gestion intelligente des DATES
-            $d_deb = $date_deb_raw ? DateTime::createFromFormat('Ymd', $date_deb_raw) : null;
-            $d_fin = $date_fin_raw ? DateTime::createFromFormat('Ymd', $date_fin_raw) : null;
-
-            if ($d_deb) {
+            $time_deb = $date_deb_raw ? strtotime(str_replace('/', '-', $date_deb_raw)) : null;
+            $time_fin = $date_fin_raw ? strtotime(str_replace('/', '-', $date_fin_raw)) : null;
+            
+            if ($time_deb) {
+                // On traduit les mois en Français
+                $fmt = new IntlDateFormatter('fr_FR', IntlDateFormatter::LONG, IntlDateFormatter::NONE);
+                
                 $output .= '<p style="margin:5px 0;"><strong>📅 Date :</strong> ';
-                if ($d_fin && $date_deb_raw !== $date_fin_raw) {
-                    $output .= 'Du ' . $d_deb->format('d F Y') . ' au ' . $d_fin->format('d F Y');
+                
+                if ($time_fin && $date_deb_raw !== $date_fin_raw) {
+                    // Cas : Du ... au ...
+                    $output .= 'Du ' . $fmt->format($time_deb) . ' au ' . $fmt->format($time_fin);
                 } else {
-                    $output .= 'Le ' . $d_deb->format('d F Y');
+                    // Cas : Le ... (même si date de fin est vide)
+                    $output .= 'Le ' . $fmt->format($time_deb);
                 }
                 $output .= '</p>';
             }
