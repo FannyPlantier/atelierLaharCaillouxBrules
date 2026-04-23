@@ -97,13 +97,23 @@ add_action('init', 'lahar_register_events');
     // Option pour limiter le nombre d'événements si besoin : [mon_agenda limit="4"]
     $atts = shortcode_atts( array( 'limit' => -1 ), $atts );
 
-    $args = array(
+    $today = date('Ymd');
+
+  $args = array(
         'post_type'      => 'evenement',
         'posts_per_page' => intval( $atts['limit'] ),
         'meta_key'       => 'eventbeginningdate',
         'orderby'        => 'meta_value_num',
         'order'          => 'ASC',
         'post_status'    => 'publish',
+        'meta_query'     => array(
+            array(
+                'key'     => 'eventenddate', 
+                'compare' => '>=',                 
+                'value'   => $today,              
+                'type'    => 'NUMERIC',
+            ),
+        ),
     );
 
     $query = new WP_Query($args);
