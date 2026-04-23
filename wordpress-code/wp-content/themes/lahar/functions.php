@@ -91,88 +91,97 @@ add_action('init', 'lahar_register_events');
 /* ==========================================================================
    5. SHORTCODE POUR AFFICHER LES ÉVÉNEMENTS
    ========================================================================== */
-function lahar_liste_evenements_shortcode() {
+   function lahar_liste_evenements_shortcode( $atts ) {
     if ( !function_exists('get_field') ) return '';
+
+    // Paramètre optionnel : nombre d'événements à afficher
+    $atts = shortcode_atts( array( 'limit' => -1 ), $atts );
 
     $args = array(
         'post_type'      => 'evenement',
-        'posts_per_page' => -1,
+        'posts_per_page' => intval( $atts['limit'] ),
         'meta_key'       => 'eventbeginningdate',
-        'orderby'        => 'meta_value_num',
+        'orderby'        => 'meta_value_num', // ✅ fonctionne correctement avec le format Ymd
         'order'          => 'ASC',
         'post_status'    => 'publish',
     );
 
     $query = new WP_Query($args);
+
+    // ✅ IntlDateFormatter instancié UNE SEULE FOIS, avant la boucle
+    $fmt = new IntlDateFormatter('fr_FR', IntlDateFormatter::LONG, IntlDateFormatter::NONE);
+
     $output = '<div class="agenda-grid" style="display: flex; flex-wrap: wrap; gap: 4%; width: 100%;">';
 
-    if ($query->have_posts()) {
-        while ($query->have_posts()) {
+    if ( $query->have_posts() ) {
+        while ( $query->have_posts() ) {
             $query->the_post();
             
-            // 1. Récupération des champs
-            $nom_custom     = get_field('eventname');
-            $date_deb_raw   = get_field('eventbeginningdate');
-            $date_fin_raw   = get_field('eventenddate');
-            $heure_deb      = get_field('eventbeginningtime');
-            $heure_fin      = get_field('eventendtime');
-            $details        = get_field('eventdetail');
-            $adresse        = get_field('eventaddress');
-            $lien           = get_field('eventlink');
+            // 1. Récupération des champs ACF
+            $nom_custom   = get_field('eventname');
+            $date_deb_raw = get_field('eventbeginningdate'); // format Ymd ex: 20260423
+            $date_fin_raw = get_field('eventenddate');       // format Ymd ex: 20260425
+            $heure_deb    = get_field('eventbeginningtime');
+            $heure_fin    = get_field('eventendtime');
+            $details      = get_field('eventdetail');
+            $adresse      = get_field('eventaddress');
+            $lien         = get_field('eventlink');
 
             $titre = $nom_custom ? $nom_custom : get_the_title();
 
             $output .= '<article class="event-card" style="width: 48%; margin-bottom: 5%; padding: 3%; border: 1px solid #f0f0f0; box-sizing: border-box; background:#fff;">';
             $output .= '<h2 style="margin-top:0; border-left: 5px solid #ff6600; padding-left: 15px; color: #ff6600;">' . esc_html($titre) . '</h2>';
             
-            // 2. Gestion intelligente des DATES
-            $time_deb = $date_deb_raw ? strtotime(str_replace('/', '-', $date_deb_raw)) : null;
-            $time_fin = $date_fin_raw ? strtotime(str_replace('/', '-', $date_fin_raw)) : null;
+            // 2. Gestion des DATES
+            // ✅ Correction : DateTime::createFromFormat avec le format Ymd
+            $dt_deb = $date_deb_raw ? DateTime::createFromFormat('Ymd', $date_deb_raw) : null;
+            $dt_fin = $date_fin_raw ? DateTime::createFromFormat('Ymd', $date_fin_raw) : null;
             
-            if ($time_deb) {
-                // On traduit les mois en Français
-                $fmt = new IntlDateFormatter('fr_FR', IntlDateFormatter::LONG, IntlDateFormatter::NONE);
-                
+            if ( $dt_deb ) {
                 $output .= '<p style="margin:5px 0;"><strong>📅 Date :</strong> ';
                 
-                if ($time_fin && $date_deb_raw !== $date_fin_raw) {
+                if ( $dt_fin && $date_deb_raw !== $date_fin_raw ) {
                     // Cas : Du ... au ...
-                    $output .= 'Du ' . $fmt->format($time_deb) . ' au ' . $fmt->format($time_fin);
+                    $output .= 'Du ' . $fmt->format( $dt_deb->getTimestamp() ) . ' au ' . $fmt->format( $dt_fin->getTimestamp() );
                 } else {
-                    // Cas : Le ... (même si date de fin est vide)
-                    $output .= 'Le ' . $fmt->format($time_deb);
+                    // Cas : Le ... (événement sur une seule journée)
+                    $output .= 'Le ' . $fmt->format( $dt_deb->getTimestamp() );
                 }
                 $output .= '</p>';
             }
 
-            // 3. Gestion intelligente des HORAIRES
-            if ($heure_deb) {
+            // 3. Gestion des HORAIRES
+            if ( $heure_deb ) {
                 $output .= '<p style="margin:5px 0;"><strong>⏰ Horaire :</strong> ' . esc_html($heure_deb);
-                if ($heure_fin) { $output .= ' - ' . esc_html($heure_fin); }
+                if ( $heure_fin ) {
+                    $output .= ' - ' . esc_html($heure_fin);
+                }
                 $output .= '</p>';
             }
 
-            // 4. Gestion de l'ADRESSE (avec tes 2 "d")
-            if ($adresse) {
+            // 4. Gestion de l'ADRESSE (champ Google Map ACF)
+            if ( $adresse ) {
                 $addr_text = is_array($adresse) ? $adresse['address'] : $adresse;
                 $output .= '<p style="margin:5px 0;"><strong>📍 Lieu :</strong> ' . esc_html($addr_text) . '</p>';
             }
 
-            // 5. DETAILS et LIEN
-            if ($details) {
-                $output .= '<div style="margin-top:15px; line-height:1.6;">' . nl2br(esc_html($details)) . '</div>';
+            // 5. DÉTAILS et LIEN
+            if ( $details ) {
+                $output .= '<div style="margin-top:15px; line-height:1.6;">' . nl2br( esc_html($details) ) . '</div>';
             }
 
-            if ($lien) {
+            if ( $lien ) {
                 $output .= '<a href="' . esc_url($lien) . '" target="_blank" style="display:inline-block; margin-top:15px; background:#000; color:#fff; padding:8px 15px; text-decoration:none;">En savoir plus</a>';
             }
 
             $output .= '</article>';
         }
-        wp_reset_postdata();
     } else {
         $output .= '<p>Aucun événement prévu pour le moment.</p>';
     }
+
+    // ✅ wp_reset_postdata() en dehors du if, toujours exécuté
+    wp_reset_postdata();
 
     $output .= '</div>';
     return $output;
