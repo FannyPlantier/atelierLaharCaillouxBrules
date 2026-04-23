@@ -94,33 +94,33 @@ add_action('init', 'lahar_register_events');
    function lahar_liste_evenements_shortcode( $atts ) {
     if ( !function_exists('get_field') ) return '';
 
-    // Paramètre optionnel : nombre d'événements à afficher
+    // Option pour limiter le nombre d'événements si besoin : [mon_agenda limit="4"]
     $atts = shortcode_atts( array( 'limit' => -1 ), $atts );
 
     $args = array(
         'post_type'      => 'evenement',
         'posts_per_page' => intval( $atts['limit'] ),
         'meta_key'       => 'eventbeginningdate',
-        'orderby'        => 'meta_value_num', // ✅ fonctionne correctement avec le format Ymd
+        'orderby'        => 'meta_value_num',
         'order'          => 'ASC',
         'post_status'    => 'publish',
     );
 
     $query = new WP_Query($args);
-
-    // ✅ IntlDateFormatter instancié UNE SEULE FOIS, avant la boucle
+    
+    // Formateur pour les dates en français
     $fmt = new IntlDateFormatter('fr_FR', IntlDateFormatter::LONG, IntlDateFormatter::NONE);
-
-    $output = '<div class="agenda-grid" style="display: flex; flex-wrap: wrap; gap: 4%; width: 100%;">';
+    
+    $output = '<div class="agenda-grid">';
 
     if ( $query->have_posts() ) {
         while ( $query->have_posts() ) {
             $query->the_post();
             
-            // 1. Récupération des champs ACF
+            // Récupération des champs
             $nom_custom   = get_field('eventname');
-            $date_deb_raw = get_field('eventbeginningdate'); // format Ymd ex: 20260423
-            $date_fin_raw = get_field('eventenddate');       // format Ymd ex: 20260425
+            $date_deb_raw = get_field('eventbeginningdate');
+            $date_fin_raw = get_field('eventenddate');
             $heure_deb    = get_field('eventbeginningtime');
             $heure_fin    = get_field('eventendtime');
             $details      = get_field('eventdetail');
@@ -129,72 +129,64 @@ add_action('init', 'lahar_register_events');
 
             $titre = $nom_custom ? $nom_custom : get_the_title();
 
-            $output .= '<article class="event-card" style="width: 48%; margin-bottom: 5%; padding: 3%; border: 1px solid #f0f0f0; box-sizing: border-box; background:#fff;">';
-            $output .= '<h2 style="margin-top:0; border-left: 5px solid #ff6600; padding-left: 15px; color: #ff6600;">' . esc_html($titre) . '</h2>';
-            
-            // 2. Gestion des DATES
-            // On essaie d'abord le format Ymd (20260423)
-            $dt_deb = $date_deb_raw ? DateTime::createFromFormat('Ymd', $date_deb_raw) : null;
+            // Début de la carte
+            $output .= '<article class="event-card">';
 
-            // Si ça échoue, on tente le format d/m/Y (23/04/2026)
-            if (!$dt_deb && $date_deb_raw) {
-                $dt_deb = DateTime::createFromFormat('d/m/Y', $date_deb_raw);
+            // Image à la une
+            if ( has_post_thumbnail() ) {
+                $output .= '<div class="event-image">' . get_the_post_thumbnail( get_the_ID(), 'medium' ) . '</div>';
             }
 
-            // SI ON A UNE DATE VALIDE
-            if ( $dt_deb ) {
-                $output .= '<p style="margin:5px 0;"><strong>📅 Date :</strong> ';
-                
-                // On vérifie si la date de fin existe aussi
-                $dt_fin = $date_fin_raw ? DateTime::createFromFormat('Ymd', $date_fin_raw) : null;
-                if (!$dt_fin && $date_fin_raw) {
-                    $dt_fin = DateTime::createFromFormat('d/m/Y', $date_fin_raw);
-                }
+            // Titre avec classe dédiée
+            $output .= '<h2 class="event-title">' . esc_html($titre) . '</h2>';
 
+            // Gestion des Dates
+            $dt_deb = $date_deb_raw ? DateTime::createFromFormat('Ymd', $date_deb_raw) : null;
+            if (!$dt_deb && $date_deb_raw) { $dt_deb = DateTime::createFromFormat('d/m/Y', $date_deb_raw); }
+            
+            $dt_fin = $date_fin_raw ? DateTime::createFromFormat('Ymd', $date_fin_raw) : null;
+            if (!$dt_fin && $date_fin_raw) { $dt_fin = DateTime::createFromFormat('d/m/Y', $date_fin_raw); }
+
+            if ( $dt_deb ) {
+                $output .= '<div class="event-info">';
+                $output .= '<p><strong>📅 Date :</strong> ';
                 if ( $dt_fin && $date_deb_raw !== $date_fin_raw ) {
                     $output .= 'Du ' . $fmt->format( $dt_deb->getTimestamp() ) . ' au ' . $fmt->format( $dt_fin->getTimestamp() );
                 } else {
                     $output .= 'Le ' . $fmt->format( $dt_deb->getTimestamp() );
                 }
                 $output .= '</p>';
-            } 
-            // PLAN B DE DEBUG : Si on a une donnée mais qu'on n'arrive pas à la lire
-            elseif ($date_deb_raw) {
-                $output .= '<p style="margin:5px 0; color: red;">Format date inconnu : ' . esc_html($date_deb_raw) . '</p>';
-            }
-
-            // 3. Gestion des HORAIRES
-            if ( $heure_deb ) {
-                $output .= '<p style="margin:5px 0;"><strong>⏰ Horaire :</strong> ' . esc_html($heure_deb);
-                if ( $heure_fin ) {
-                    $output .= ' - ' . esc_html($heure_fin);
+                
+                if ( $heure_deb ) {
+                    $output .= '<p><strong>⏰ Horaire :</strong> ' . esc_html($heure_deb);
+                    if ($heure_fin) $output .= ' - ' . esc_html($heure_fin);
+                    $output .= '</p>';
                 }
-                $output .= '</p>';
+                $output .= '</div>';
             }
 
-            // 4. Gestion de l'ADRESSE (champ Google Map ACF)
+            // Lieu
             if ( $adresse ) {
                 $addr_text = is_array($adresse) ? $adresse['address'] : $adresse;
-                $output .= '<p style="margin:5px 0;"><strong>📍 Lieu :</strong> ' . esc_html($addr_text) . '</p>';
+                $output .= '<p class="event-location"><strong>📍 Lieu :</strong> ' . esc_html($addr_text) . '</p>';
             }
 
-            // 5. DÉTAILS et LIEN
+            // Description
             if ( $details ) {
-                $output .= '<div style="margin-top:15px; line-height:1.6;">' . nl2br( esc_html($details) ) . '</div>';
+                $output .= '<div class="event-details">' . nl2br( esc_html($details) ) . '</div>';
             }
 
+            // Bouton
             if ( $lien ) {
-                $output .= '<a href="' . esc_url($lien) . '" target="_blank" style="display:inline-block; margin-top:15px; background:#000; color:#fff; padding:8px 15px; text-decoration:none;">En savoir plus</a>';
+                $output .= '<a href="' . esc_url($lien) . '" target="_blank" class="event-link">En savoir plus</a>';
             }
 
             $output .= '</article>';
         }
+        wp_reset_postdata();
     } else {
-        $output .= '<p>Aucun événement prévu pour le moment.</p>';
+        $output .= '<p class="no-event">Aucun événement prévu pour le moment.</p>';
     }
-
-    // ✅ wp_reset_postdata() en dehors du if, toujours exécuté
-    wp_reset_postdata();
 
     $output .= '</div>';
     return $output;

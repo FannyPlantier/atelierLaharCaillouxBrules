@@ -309,7 +309,7 @@ h2 {
 }
 
 /* ==========================================================================
-   6. CONTACT SECTION (UNIFIÉE)
+   6. CONTACT SECTION
    ========================================================================== */
 #contact {
     margin-top: 5% !important;
@@ -448,4 +448,57 @@ h2 {
     .form-equerre-wrapper {
         border: solid 1px var(--secondary-title);
     }
+}
+
+/* ==========================================================================
+   7. AGENDA 
+   ========================================================================== */
+
+/* La grille globale */
+.agenda-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4%;
+    width: 100%;
+}
+
+/* La carte d'événement */
+.event-card {
+    width: 48%; /* Deux cartes par ligne */
+    margin-bottom: 5%;
+    padding: 3%;
+    border: 0.1% solid #f0f0f0; /* Très fin */
+    background: #ffffff;
+    box-sizing: border-box;
+    transition: background 0.3s ease;
+}
+
+.event-card:hover {
+    background: #fafafa; /* Petit effet au survol */
+}
+
+/* Le titre avec sa barre orange */
+.event-title {
+    margin-top: 0%;
+    border-left: 1.5% solid #ff6600; /* Épaisseur en % du parent */
+    padding-left: 4%;
+    color: #ff6600;
+    font-size: 150%; /* On peut utiliser des % pour la taille du texte aussi ! */
+}
+
+/* Les infos (date, lieu) */
+.event-info p {
+    margin: 2% 0%;
+    font-size: 90%;
+}
+
+/* Le bouton "En savoir plus" */
+.event-link {
+    display: inline-block;
+    margin-top: 5%;
+    background: #ff6600;
+    color: #fff;
+    padding: 2% 5%;
+    text-decoration: none;
+    font-weight: bold;
 }
