@@ -94,108 +94,109 @@ add_action('init', 'lahar_register_events');
    function lahar_liste_evenements_shortcode( $atts ) {
     if ( !function_exists('get_field') ) return '';
 
-    // Option pour limiter le nombre d'événements si besoin : [mon_agenda limit="4"]
-    $atts = shortcode_atts( array( 'limit' => -1 ), $atts );
+    // Paramètres : limit (-1 = tout afficher) et archive (oui/non)
+    $atts = shortcode_atts( array( 
+        'limit'   => -1,
+        'archive' => 'non' 
+    ), $atts );
 
-    $today = date('Ymd');
+    $today      = date('Ymd');
+    $is_archive = ($atts['archive'] === 'oui');
 
-  $args = array(
+    $args = array(
         'post_type'      => 'evenement',
         'posts_per_page' => intval( $atts['limit'] ),
         'meta_key'       => 'eventbeginningdate',
         'orderby'        => 'meta_value_num',
-        'order'          => 'ASC',
+        // Futur : du plus proche au plus loin. Archive : du plus récent au plus vieux.
+        'order'          => $is_archive ? 'DESC' : 'ASC', 
         'post_status'    => 'publish',
         'meta_query'     => array(
             array(
                 'key'     => 'eventenddate', 
-                'compare' => '>=',                 
-                'value'   => $today,              
+                'compare' => $is_archive ? '<' : '>=',
+                'value'   => $today,               
                 'type'    => 'NUMERIC',
             ),
         ),
     );
 
     $query = new WP_Query($args);
-    
-    // Formateur pour les dates en français
     $fmt = new IntlDateFormatter('fr_FR', IntlDateFormatter::LONG, IntlDateFormatter::NONE);
     
-    $output = '<div class="agenda-grid">';
+    $grid_class = $is_archive ? 'agenda-archive-list' : 'agenda-grid';
+    $output = '<div class="' . $grid_class . '">';
 
     if ( $query->have_posts() ) {
         while ( $query->have_posts() ) {
             $query->the_post();
             
-            // Récupération des champs
+            // Données communes
             $nom_custom   = get_field('eventname');
             $date_deb_raw = get_field('eventbeginningdate');
             $date_fin_raw = get_field('eventenddate');
-            $heure_deb    = get_field('eventbeginningtime');
-            $heure_fin    = get_field('eventendtime');
-            $details      = get_field('eventdetail');
-            $adresse      = get_field('eventaddress');
-            $lien         = get_field('eventlink');
+            $type         = get_field('eventtype');
+            $titre        = $nom_custom ? $nom_custom : get_the_title();
+            $dt_deb       = $date_deb_raw ? DateTime::createFromFormat('Ymd', $date_deb_raw) : null;
+            if (!$dt_deb && $date_deb_raw) $dt_deb = DateTime::createFromFormat('d/m/Y', $date_deb_raw);
 
-            $titre = $nom_custom ? $nom_custom : get_the_title();
-
-            // Début de la carte
-            $output .= '<article class="event-card">';
-
-            // Image à la une
-            if ( has_post_thumbnail() ) {
-                $output .= '<div class="event-image">' . get_the_post_thumbnail( get_the_ID(), 'medium' ) . '</div>';
-            }
-
-            // Titre avec classe dédiée
-            $output .= '<h2 class="event-title">' . esc_html($titre) . '</h2>';
-
-            // Gestion des Dates
-            $dt_deb = $date_deb_raw ? DateTime::createFromFormat('Ymd', $date_deb_raw) : null;
-            if (!$dt_deb && $date_deb_raw) { $dt_deb = DateTime::createFromFormat('d/m/Y', $date_deb_raw); }
-            
-            $dt_fin = $date_fin_raw ? DateTime::createFromFormat('Ymd', $date_fin_raw) : null;
-            if (!$dt_fin && $date_fin_raw) { $dt_fin = DateTime::createFromFormat('d/m/Y', $date_fin_raw); }
-
-            if ( $dt_deb ) {
-                $output .= '<div class="event-info">';
-                $output .= '<p><strong>📅 Date :</strong> ';
-                if ( $dt_fin && $date_deb_raw !== $date_fin_raw ) {
-                    $output .= 'Du ' . $fmt->format( $dt_deb->getTimestamp() ) . ' au ' . $fmt->format( $dt_fin->getTimestamp() );
-                } else {
-                    $output .= 'Le ' . $fmt->format( $dt_deb->getTimestamp() );
-                }
-                $output .= '</p>';
-                
-                if ( $heure_deb ) {
-                    $output .= '<p><strong>⏰ Horaire :</strong> ' . esc_html($heure_deb);
-                    if ($heure_fin) $output .= ' - ' . esc_html($heure_fin);
-                    $output .= '</p>';
-                }
+            if ( $is_archive ) {
+                // --- MODE ARCHIVE : Ligne compacte sans image ---
+                $output .= '<div class="archive-item">';
+                    $output .= '<span class="archive-date">' . ($dt_deb ? $fmt->format($dt_deb->getTimestamp()) : '') . '</span>';
+                    $output .= '<h3 class="archive-title">' . esc_html($titre) . '</h3>';
+                    if ($type) {
+                        $label = is_array($type) ? $type['label'] : $type;
+                        $output .= '<span class="archive-tag">' . esc_html($label) . '</span>';
+                    }
+                    $output .= '<a href="' . get_permalink() . '" class="archive-link">Détails</a>';
                 $output .= '</div>';
-            }
+            } else {
+                // --- MODE NORMAL : Cartes Dark Mode avec images ---
+                $heure_deb = get_field('eventbeginningtime');
+                $heure_fin = get_field('eventendtime');
+                $adresse   = get_field('eventaddress');
+                $lien      = get_field('eventlink');
+                $details   = get_field('eventdetail');
+                $image_acf = get_field('eventimage');
 
-            // Lieu
-            if ( $adresse ) {
-                $addr_text = is_array($adresse) ? $adresse['address'] : $adresse;
-                $output .= '<p class="event-location"><strong>📍 Lieu :</strong> ' . esc_html($addr_text) . '</p>';
+                $output .= '<article class="event-card">';
+                    $output .= '<div class="event-header">';
+                        if ( $image_acf ) {
+                            $img_url = is_array($image_acf) ? $image_acf['url'] : $image_acf;
+                            $output .= '<img src="' . esc_url($img_url) . '" class="event-img" alt="' . esc_attr($titre) . '">';
+                        } else {
+                            $random_imgs = get_posts(array('post_type'=>'attachment','post_mime_type'=>'image','posts_per_page'=>1,'orderby'=>'rand'));
+                            if ($random_imgs) $output .= wp_get_attachment_image($random_imgs[0]->ID,'large',false,array('class'=>'event-img'));
+                        }
+                        $output .= '<div class="event-overlay"></div>';
+                        if ($type) {
+                            $label = is_array($type) ? $type['label'] : $type;
+                            $output .= '<span class="event-badge">' . esc_html($label) . '</span>';
+                        }
+                    $output .= '</div>';
+                    
+                    $output .= '<div class="event-content">';
+                        $output .= '<h2 class="event-title">' . esc_html($titre) . '</h2>';
+                        $output .= '<div class="event-meta">';
+                            if ($dt_deb) {
+                                $dt_fin = $date_fin_raw ? DateTime::createFromFormat('Ymd', $date_fin_raw) : null;
+                                $date_text = ($dt_fin && $date_deb_raw !== $date_fin_raw) ? 'Du '.$fmt->format($dt_deb->getTimestamp()).' au '.$fmt->format($dt_fin->getTimestamp()) : $fmt->format($dt_deb->getTimestamp());
+                                $output .= '<p><span>📅</span> ' . $date_text . '</p>';
+                            }
+                            if ($heure_deb) $output .= '<p><span>🕒</span> ' . esc_html($heure_deb) . ($heure_fin ? ' - '.esc_html($heure_fin) : '') . '</p>';
+                            if ($adresse) $output .= '<p><span>📍</span> ' . esc_html(is_array($adresse) ? $adresse['address'] : $adresse) . '</p>';
+                        $output .= '</div>';
+                        if ($details) $output .= '<div class="event-excerpt">' . wp_trim_words(esc_html($details), 18) . '</div>';
+                        if ($lien) $output .= '<a href="'.esc_url($lien).'" target="_blank" class="event-button">En savoir plus</a>';
+                    $output .= '</div>';
+                $output .= '</article>';
             }
-
-            // Description
-            if ( $details ) {
-                $output .= '<div class="event-details">' . nl2br( esc_html($details) ) . '</div>';
-            }
-
-            // Bouton
-            if ( $lien ) {
-                $output .= '<a href="' . esc_url($lien) . '" target="_blank" class="event-link">En savoir plus</a>';
-            }
-
-            $output .= '</article>';
         }
         wp_reset_postdata();
     } else {
-        $output .= '<p class="no-event">Aucun événement prévu pour le moment.</p>';
+        $msg = $is_archive ? "Aucune archive pour le moment." : "Aucun événement prévu pour le moment.";
+        $output .= '<p class="no-event">' . $msg . '</p>';
     }
 
     $output .= '</div>';

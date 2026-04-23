@@ -454,51 +454,61 @@ h2 {
    7. AGENDA 
    ========================================================================== */
 
-/* La grille globale */
-.agenda-grid {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 4%;
+/* Container Archives */
+.agenda-archive-list {
     width: 100%;
-}
-
-/* La carte d'événement */
-.event-card {
-    width: 48%; /* Deux cartes par ligne */
-    margin-bottom: 5%;
-    padding: 3%;
-    border: 0.1% solid #f0f0f0; /* Très fin */
-    background: #ffffff;
-    box-sizing: border-box;
-    transition: background 0.3s ease;
-}
-
-.event-card:hover {
-    background: #fafafa; /* Petit effet au survol */
-}
-
-/* Le titre avec sa barre orange */
-.event-title {
-    margin-top: 0%;
-    border-left: 1.5% solid #ff6600; /* Épaisseur en % du parent */
-    padding-left: 4%;
-    color: #ff6600;
-    font-size: 150%; /* On peut utiliser des % pour la taille du texte aussi ! */
-}
-
-/* Les infos (date, lieu) */
-.event-info p {
-    margin: 2% 0%;
-    font-size: 90%;
-}
-
-/* Le bouton "En savoir plus" */
-.event-link {
-    display: inline-block;
     margin-top: 5%;
-    background: #ff6600;
-    color: #fff;
-    padding: 2% 5%;
+}
+
+.archive-item {
+    display: flex;
+    align-items: center;
+    padding: 2.5% 0%;
+    border-bottom: 0.1% solid #333; /* Ligne de séparation très fine */
+    gap: 4%;
+}
+
+.archive-date {
+    width: 25%;
+    color: #777;
+    font-size: 85%;
+    text-transform: capitalize;
+}
+
+.archive-title {
+    width: 45%;
+    font-size: 110%;
+    color: #ffffff;
+    margin: 0%;
+}
+
+.archive-tag {
+    background: #2a2a2a;
+    color: #888;
+    padding: 0.5% 2%;
+    font-size: 70%;
+    border-radius: 0.5%;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.archive-link {
+    margin-left: auto; /* Pousse le lien à droite */
+    color: #ff4500;
     text-decoration: none;
+    font-size: 85%;
     font-weight: bold;
+    transition: opacity 0.3s;
+}
+
+.archive-link:hover {
+    opacity: 70%;
+}
+
+/* Mobile : on empile */
+@media (max-width: 768px) {
+    .archive-item { flex-wrap: wrap; padding: 5% 0%; }
+    .archive-date { width: 100%; margin-bottom: 1%; }
+    .archive-title { width: 100%; margin-bottom: 3%; }
+    .archive-tag { margin-bottom: 3%; }
 }
