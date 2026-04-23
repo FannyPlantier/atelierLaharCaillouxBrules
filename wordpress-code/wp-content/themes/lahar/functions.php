@@ -133,21 +133,34 @@ add_action('init', 'lahar_register_events');
             $output .= '<h2 style="margin-top:0; border-left: 5px solid #ff6600; padding-left: 15px; color: #ff6600;">' . esc_html($titre) . '</h2>';
             
             // 2. Gestion des DATES
-            // ✅ Correction : DateTime::createFromFormat avec le format Ymd
+            // On essaie d'abord le format Ymd (20260423)
             $dt_deb = $date_deb_raw ? DateTime::createFromFormat('Ymd', $date_deb_raw) : null;
-            $dt_fin = $date_fin_raw ? DateTime::createFromFormat('Ymd', $date_fin_raw) : null;
-            
+
+            // Si ça échoue, on tente le format d/m/Y (23/04/2026)
+            if (!$dt_deb && $date_deb_raw) {
+                $dt_deb = DateTime::createFromFormat('d/m/Y', $date_deb_raw);
+            }
+
+            // SI ON A UNE DATE VALIDE
             if ( $dt_deb ) {
                 $output .= '<p style="margin:5px 0;"><strong>📅 Date :</strong> ';
                 
+                // On vérifie si la date de fin existe aussi
+                $dt_fin = $date_fin_raw ? DateTime::createFromFormat('Ymd', $date_fin_raw) : null;
+                if (!$dt_fin && $date_fin_raw) {
+                    $dt_fin = DateTime::createFromFormat('d/m/Y', $date_fin_raw);
+                }
+
                 if ( $dt_fin && $date_deb_raw !== $date_fin_raw ) {
-                    // Cas : Du ... au ...
                     $output .= 'Du ' . $fmt->format( $dt_deb->getTimestamp() ) . ' au ' . $fmt->format( $dt_fin->getTimestamp() );
                 } else {
-                    // Cas : Le ... (événement sur une seule journée)
                     $output .= 'Le ' . $fmt->format( $dt_deb->getTimestamp() );
                 }
                 $output .= '</p>';
+            } 
+            // PLAN B DE DEBUG : Si on a une donnée mais qu'on n'arrive pas à la lire
+            elseif ($date_deb_raw) {
+                $output .= '<p style="margin:5px 0; color: red;">Format date inconnu : ' . esc_html($date_deb_raw) . '</p>';
             }
 
             // 3. Gestion des HORAIRES
