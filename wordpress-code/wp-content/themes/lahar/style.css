@@ -493,7 +493,7 @@ h2 {
 }
 
 .archive-link {
-    margin-left: auto; /* Pousse le lien à droite */
+    margin-left: auto;
     color: #ff4500;
     text-decoration: none;
     font-size: 85%;
@@ -505,12 +505,63 @@ h2 {
     opacity: 70%;
 }
 
+/* Archive : corps titre + pitch */
+.archive-item {
+    align-items: flex-start;
+}
+
+.archive-body {
+    flex: 1;
+    min-width: 0;
+}
+
+.archive-title {
+    width: auto !important;
+    margin: 0 !important;
+}
+
+.archive-pitch {
+    color: var(--descriptive-text);
+    font-size: 82%;
+    margin: 3px 0 0 0 !important;
+    padding: 0 !important;
+    line-height: 1.4;
+}
+
+/* Bouton toggle "voir les archives" */
+.agenda-toggle-btn {
+    background: none;
+    border: 1px solid var(--secondary-title);
+    color: var(--secondary-title);
+    font-family: var(--font-title);
+    font-size: 88%;
+    font-weight: 600;
+    padding: 10px 20px;
+    border-radius: 6px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 4%;
+    transition: background-color 0.3s;
+}
+
+.agenda-toggle-btn:hover {
+    background-color: var(--orange-10);
+}
+
+.agenda-toggle-icon {
+    transition: transform 0.3s ease;
+    font-size: 80%;
+}
+
 /* Mobile : on empile */
 @media (max-width: 768px) {
-    .archive-item { flex-wrap: wrap; padding: 5% 0%; }
-    .archive-date { width: 100%; margin-bottom: 1%; }
-    .archive-title { width: 100%; margin-bottom: 3%; }
+    .archive-item { flex-wrap: wrap; padding: 5% 0%; align-items: flex-start; }
+    .archive-date { width: 100%; margin-bottom: 2%; }
+    .archive-body { width: 100%; }
     .archive-tag { margin-bottom: 3%; }
+    .agenda-toggle-btn { margin-top: 8%; font-size: 85%; }
 }
 
 /* Grille des cartes événements */

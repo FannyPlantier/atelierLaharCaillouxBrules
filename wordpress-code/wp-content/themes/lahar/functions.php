@@ -124,22 +124,44 @@ add_action('init', 'lahar_register_events');
     $query = new WP_Query($args);
     $fmt = new IntlDateFormatter('fr_FR', IntlDateFormatter::LONG, IntlDateFormatter::NONE);
 
-    // Pré-chargement des images de fallback (hors mode archive)
+    // Pré-chargement des images de fallback persistantes (hors mode archive)
     $fallback_images = array();
     $fallback_index  = 0;
     if ( !$is_archive ) {
-        $all_img_ids = get_posts( array(
+        // Récupère les IDs déjà stockés pour ne pas les redistribuer
+        $already_used = array();
+        foreach ( $query->posts as $p ) {
+            $stored = get_post_meta( $p->ID, '_event_fallback_image_id', true );
+            if ( $stored ) $already_used[] = (int) $stored;
+        }
+        $pool_args = array(
             'post_type'      => 'attachment',
             'post_mime_type' => 'image',
             'posts_per_page' => -1,
             'fields'         => 'ids',
-        ) );
-        shuffle( $all_img_ids );
-        $fallback_images = $all_img_ids;
+        );
+        if ( !empty( $already_used ) ) $pool_args['exclude'] = $already_used;
+        $new_pool = get_posts( $pool_args );
+        shuffle( $new_pool );
+        $fallback_images = $new_pool;
     }
 
-    $grid_class = $is_archive ? 'agenda-archive-list' : 'agenda-grid';
-    $output = '<div class="' . $grid_class . '">';
+    // Construction du container principal
+    if ( $is_archive ) {
+        static $archive_js_done = false;
+        $js = '';
+        if ( !$archive_js_done ) {
+            $js = '<script>document.addEventListener("DOMContentLoaded",function(){var btn=document.querySelector(".agenda-toggle-btn");if(!btn)return;btn.addEventListener("click",function(){var list=document.getElementById("agenda-archive-list");var open=this.getAttribute("aria-expanded")==="true";list.style.display=open?"none":"block";this.setAttribute("aria-expanded",open?"false":"true");var icon=this.querySelector(".agenda-toggle-icon");if(icon)icon.style.transform=open?"":"rotate(180deg)";});});</script>';
+            $archive_js_done = true;
+        }
+        $output = $js
+            . '<button class="agenda-toggle-btn" aria-expanded="false">'
+            . 'Voir tous les événements passés&nbsp;<i class="fa-solid fa-chevron-down agenda-toggle-icon"></i>'
+            . '</button>'
+            . '<div class="agenda-archive-list" id="agenda-archive-list" style="display:none;">';
+    } else {
+        $output = '<div class="agenda-grid">';
+    }
 
     if ( $query->have_posts() ) {
         while ( $query->have_posts() ) {
@@ -155,15 +177,14 @@ add_action('init', 'lahar_register_events');
             if (!$dt_deb && $date_deb_raw) $dt_deb = DateTime::createFromFormat('d/m/Y', $date_deb_raw);
 
             if ( $is_archive ) {
-                // --- MODE ARCHIVE : Ligne compacte sans image ---
+                // --- MODE ARCHIVE : Ligne compacte (date + titre + pitch) ---
+                $details_archive = get_field('eventdetail');
                 $output .= '<div class="archive-item">';
-                    $output .= '<span class="archive-date">' . ($dt_deb ? $fmt->format($dt_deb->getTimestamp()) : '') . '</span>';
-                    $output .= '<h3 class="archive-title">' . esc_html($titre) . '</h3>';
-                    if ($type) {
-                        $label = is_array($type) ? $type['label'] : $type;
-                        $output .= '<span class="archive-tag">' . esc_html($label) . '</span>';
-                    }
-                    $output .= '<a href="' . get_permalink() . '" class="archive-link">Détails</a>';
+                    $output .= '<span class="archive-date">' . ($dt_deb ? ucfirst($fmt->format($dt_deb->getTimestamp())) : '') . '</span>';
+                    $output .= '<div class="archive-body">';
+                        $output .= '<h3 class="archive-title">' . esc_html($titre) . '</h3>';
+                        if ($details_archive) $output .= '<p class="archive-pitch">' . wp_trim_words(esc_html($details_archive), 15) . '</p>';
+                    $output .= '</div>';
                 $output .= '</div>';
             } else {
                 // --- MODE NORMAL : Cartes Dark Mode avec images ---
@@ -179,10 +200,17 @@ add_action('init', 'lahar_register_events');
                         if ( $image_acf ) {
                             $img_url = is_array($image_acf) ? $image_acf['url'] : $image_acf;
                             $output .= '<img src="' . esc_url($img_url) . '" class="event-img" alt="' . esc_attr($titre) . '">';
-                        } elseif ( !empty($fallback_images) ) {
-                            $img_id = $fallback_images[ $fallback_index % count($fallback_images) ];
-                            $fallback_index++;
-                            $output .= wp_get_attachment_image( $img_id, 'large', false, array('class' => 'event-img') );
+                        } else {
+                            // Image persistante : on vérifie le meta avant de piocher dans le pool
+                            $stored_id = get_post_meta( get_the_ID(), '_event_fallback_image_id', true );
+                            if ( $stored_id && wp_get_attachment_url( $stored_id ) ) {
+                                $output .= wp_get_attachment_image( $stored_id, 'large', false, array('class' => 'event-img') );
+                            } elseif ( !empty($fallback_images) ) {
+                                $img_id = $fallback_images[ $fallback_index % count($fallback_images) ];
+                                $fallback_index++;
+                                update_post_meta( get_the_ID(), '_event_fallback_image_id', $img_id );
+                                $output .= wp_get_attachment_image( $img_id, 'large', false, array('class' => 'event-img') );
+                            }
                         }
                         $output .= '<div class="event-overlay"></div>';
                         if ($type) {
@@ -195,11 +223,22 @@ add_action('init', 'lahar_register_events');
                         $output .= '<h2 class="event-title">' . esc_html($titre) . '</h2>';
                         $output .= '<div class="event-meta">';
                             if ($dt_deb) {
-                                $dt_fin = $date_fin_raw ? DateTime::createFromFormat('Ymd', $date_fin_raw) : null;
-                                $date_text = ($dt_fin && $date_deb_raw !== $date_fin_raw) ? 'Du '.$fmt->format($dt_deb->getTimestamp()).' au '.$fmt->format($dt_fin->getTimestamp()) : $fmt->format($dt_deb->getTimestamp());
+                                $dt_fin = null;
+                                if ($date_fin_raw) {
+                                    $dt_fin = DateTime::createFromFormat('Ymd', $date_fin_raw);
+                                    if (!$dt_fin) $dt_fin = DateTime::createFromFormat('d/m/Y', $date_fin_raw);
+                                }
+                                $date_text = ($dt_fin && $date_deb_raw !== $date_fin_raw)
+                                    ? 'Du ' . $fmt->format($dt_deb->getTimestamp()) . ' au ' . $fmt->format($dt_fin->getTimestamp())
+                                    : $fmt->format($dt_deb->getTimestamp());
                                 $output .= '<p><i class="fa-regular fa-calendar"></i> ' . $date_text . '</p>';
                             }
-                            if ($heure_deb) $output .= '<p><i class="fa-regular fa-clock"></i> ' . esc_html($heure_deb) . ($heure_fin ? ' - '.esc_html($heure_fin) : '') . '</p>';
+                            if ($heure_deb) {
+                                $heure_text = $heure_fin
+                                    ? 'De ' . esc_html($heure_deb) . ' à ' . esc_html($heure_fin)
+                                    : esc_html($heure_deb);
+                                $output .= '<p><i class="fa-regular fa-clock"></i> ' . $heure_text . '</p>';
+                            }
                             if ($adresse) $output .= '<p><i class="fa-solid fa-location-dot"></i> ' . esc_html(is_array($adresse) ? $adresse['address'] : $adresse) . '</p>';
                         $output .= '</div>';
                         if ($details) $output .= '<div class="event-excerpt">' . wp_trim_words(esc_html($details), 18) . '</div>';
