@@ -91,166 +91,243 @@ add_action('init', 'lahar_register_events');
 /* ==========================================================================
    5. SHORTCODE POUR AFFICHER LES ÉVÉNEMENTS
    ========================================================================== */
-   function lahar_liste_evenements_shortcode( $atts ) {
+function lahar_liste_evenements_shortcode( $atts ) {
     if ( !function_exists('get_field') ) return '';
 
-    // Paramètres : limit (-1 = tout afficher) et archive (oui/non)
-    $atts = shortcode_atts( array( 
+    $atts = shortcode_atts( array(
         'limit'   => -1,
-        'archive' => 'non' 
+        'archive' => 'non'
     ), $atts );
 
     $today      = date('Ymd');
     $is_archive = ($atts['archive'] === 'oui');
+    $fmt        = new IntlDateFormatter('fr_FR', IntlDateFormatter::LONG, IntlDateFormatter::NONE);
 
-    $args = array(
+    $query_args = array(
         'post_type'      => 'evenement',
         'posts_per_page' => intval( $atts['limit'] ),
         'meta_key'       => 'eventbeginningdate',
         'orderby'        => 'meta_value_num',
-        // Futur : du plus proche au plus loin. Archive : du plus récent au plus vieux.
-        'order'          => $is_archive ? 'DESC' : 'ASC', 
+        'order'          => $is_archive ? 'DESC' : 'ASC',
         'post_status'    => 'publish',
         'meta_query'     => array(
             array(
-                'key'     => 'eventenddate', 
+                'key'     => 'eventenddate',
                 'compare' => $is_archive ? '<' : '>=',
-                'value'   => $today,               
+                'value'   => $today,
                 'type'    => 'NUMERIC',
             ),
         ),
     );
 
-    $query = new WP_Query($args);
-    $fmt = new IntlDateFormatter('fr_FR', IntlDateFormatter::LONG, IntlDateFormatter::NONE);
+    // Utilitaire : parse une date ACF (Ymd ou d/m/Y)
+    $parse_date = function( $raw ) {
+        if ( !$raw ) return null;
+        $d = DateTime::createFromFormat('Ymd', $raw);
+        if ( !$d ) $d = DateTime::createFromFormat('d/m/Y', $raw);
+        return $d ?: null;
+    };
 
-    // Pré-chargement des images de fallback persistantes (hors mode archive)
-    $fallback_images = array();
-    $fallback_index  = 0;
-    if ( !$is_archive ) {
-        // Récupère les IDs déjà stockés pour ne pas les redistribuer
-        $already_used = array();
-        foreach ( $query->posts as $p ) {
-            $stored = get_post_meta( $p->ID, '_event_fallback_image_id', true );
-            if ( $stored ) $already_used[] = (int) $stored;
-        }
-        $pool_args = array(
-            'post_type'      => 'attachment',
-            'post_mime_type' => 'image',
-            'posts_per_page' => -1,
-            'fields'         => 'ids',
-        );
-        if ( !empty( $already_used ) ) $pool_args['exclude'] = $already_used;
-        $new_pool = get_posts( $pool_args );
-        shuffle( $new_pool );
-        $fallback_images = $new_pool;
-    }
+    // Utilitaire : extrait le texte d'un champ adresse (texte brut ou Google Map ACF)
+    $parse_address = function( $raw ) {
+        if ( !$raw ) return '';
+        return is_array($raw) ? ( $raw['address'] ?? '' ) : (string) $raw;
+    };
 
-    // Construction du container principal
+    /* =====================================================================
+       MODE ARCHIVE : accordéon par année
+       ===================================================================== */
     if ( $is_archive ) {
+        $query = new WP_Query($query_args);
+
         static $archive_js_done = false;
         $js = '';
         if ( !$archive_js_done ) {
-            $js = '<script>document.addEventListener("DOMContentLoaded",function(){var btn=document.querySelector(".agenda-toggle-btn");if(!btn)return;btn.addEventListener("click",function(){var list=document.getElementById("agenda-archive-list");var open=this.getAttribute("aria-expanded")==="true";list.style.display=open?"none":"block";this.setAttribute("aria-expanded",open?"false":"true");var icon=this.querySelector(".agenda-toggle-icon");if(icon)icon.style.transform=open?"":"rotate(180deg)";});});</script>';
+            $js = '<script>document.addEventListener("DOMContentLoaded",function(){'
+                . 'var mainBtn=document.querySelector(".agenda-toggle-btn");'
+                . 'if(mainBtn){mainBtn.addEventListener("click",function(){'
+                .   'var list=document.getElementById("agenda-archive-list");'
+                .   'var open=this.getAttribute("aria-expanded")==="true";'
+                .   'list.style.display=open?"none":"block";'
+                .   'this.setAttribute("aria-expanded",open?"false":"true");'
+                .   'var ic=this.querySelector(".agenda-toggle-icon");if(ic)ic.style.transform=open?"":"rotate(180deg)";'
+                . '});}'
+                . 'document.querySelectorAll(".archive-year-btn").forEach(function(btn){'
+                .   'btn.addEventListener("click",function(){'
+                .     'var c=this.nextElementSibling;'
+                .     'var open=this.getAttribute("aria-expanded")==="true";'
+                .     'c.style.display=open?"none":"block";'
+                .     'this.setAttribute("aria-expanded",open?"false":"true");'
+                .     'var ic=this.querySelector(".archive-year-icon");if(ic)ic.style.transform=open?"":"rotate(180deg)";'
+                .   '});'
+                . '});'
+                . '});</script>';
             $archive_js_done = true;
         }
+
         $output = $js
             . '<button class="agenda-toggle-btn" aria-expanded="false">'
             . 'Voir tous les événements passés&nbsp;<i class="fa-solid fa-chevron-down agenda-toggle-icon"></i>'
             . '</button>'
-            . '<div class="agenda-archive-list" id="agenda-archive-list" style="display:none;">';
-    } else {
-        $output = '<div class="agenda-grid">';
+            . '<div id="agenda-archive-list" style="display:none;">';
+
+        if ( $query->have_posts() ) {
+            // Collecte groupée par année
+            $events_by_year = array();
+            while ( $query->have_posts() ) {
+                $query->the_post();
+                $nom_custom   = get_field('eventname');
+                $date_deb_raw = get_field('eventbeginningdate');
+                $date_fin_raw = get_field('eventenddate');
+                $titre        = $nom_custom ? $nom_custom : get_the_title();
+                $dt_deb       = $parse_date($date_deb_raw);
+                $year         = $dt_deb ? $dt_deb->format('Y') : '0000';
+
+                $events_by_year[$year][] = array(
+                    'titre'        => $titre,
+                    'dt_deb'       => $dt_deb,
+                    'date_deb_raw' => $date_deb_raw,
+                    'date_fin_raw' => $date_fin_raw,
+                    'details'      => get_field('eventdetail'),
+                    'adresse'      => $parse_address( get_field('eventaddress') ),
+                );
+            }
+            wp_reset_postdata();
+
+            krsort($events_by_year);
+            foreach ( $events_by_year as $year => $events ) {
+                $output .= '<div class="archive-year-group">';
+                $output .= '<button class="archive-year-btn" aria-expanded="false">'
+                    . esc_html($year)
+                    . '&nbsp;<i class="fa-solid fa-chevron-down archive-year-icon"></i>'
+                    . '</button>';
+                $output .= '<div class="archive-year-content" style="display:none;">';
+
+                foreach ( $events as $ev ) {
+                    $dt_fin    = $parse_date($ev['date_fin_raw']);
+                    $date_text = ($dt_fin && $ev['date_deb_raw'] !== $ev['date_fin_raw'])
+                        ? 'Du ' . $fmt->format($ev['dt_deb']->getTimestamp()) . ' au ' . $fmt->format($dt_fin->getTimestamp())
+                        : ($ev['dt_deb'] ? ucfirst($fmt->format($ev['dt_deb']->getTimestamp())) : '');
+
+                    $output .= '<div class="archive-item">';
+                        $output .= '<span class="archive-date">' . $date_text . '</span>';
+                        $output .= '<div class="archive-body">';
+                            $output .= '<h3 class="archive-title">' . esc_html($ev['titre']) . '</h3>';
+                            if ($ev['adresse']) {
+                                $output .= '<p class="archive-address"><i class="fa-solid fa-location-dot"></i> ' . esc_html($ev['adresse']) . '</p>';
+                            }
+                            if ($ev['details']) {
+                                $output .= '<div class="archive-pitch">' . nl2br(esc_html($ev['details'])) . '</div>';
+                            }
+                        $output .= '</div>';
+                    $output .= '</div>';
+                }
+
+                $output .= '</div>'; // .archive-year-content
+                $output .= '</div>'; // .archive-year-group
+            }
+        } else {
+            $output .= '<p class="no-event">Aucune archive pour le moment.</p>';
+        }
+
+        $output .= '</div>'; // #agenda-archive-list
+        return $output;
     }
+
+    /* =====================================================================
+       MODE NORMAL : grille de cartes (événements à venir)
+       ===================================================================== */
+    $query = new WP_Query($query_args);
+
+    // Images de fallback persistantes
+    $fallback_images = array();
+    $fallback_index  = 0;
+    $already_used    = array();
+    foreach ( $query->posts as $p ) {
+        $stored = get_post_meta( $p->ID, '_event_fallback_image_id', true );
+        if ( $stored ) $already_used[] = (int) $stored;
+    }
+    $pool_args = array(
+        'post_type'      => 'attachment',
+        'post_mime_type' => 'image',
+        'posts_per_page' => -1,
+        'fields'         => 'ids',
+    );
+    if ( !empty($already_used) ) $pool_args['exclude'] = $already_used;
+    $new_pool = get_posts($pool_args);
+    shuffle($new_pool);
+    $fallback_images = $new_pool;
+
+    $output = '<div class="agenda-grid">';
 
     if ( $query->have_posts() ) {
         while ( $query->have_posts() ) {
             $query->the_post();
-            
-            // Données communes
+
             $nom_custom   = get_field('eventname');
             $date_deb_raw = get_field('eventbeginningdate');
             $date_fin_raw = get_field('eventenddate');
             $type         = get_field('eventtype');
             $titre        = $nom_custom ? $nom_custom : get_the_title();
-            $dt_deb       = $date_deb_raw ? DateTime::createFromFormat('Ymd', $date_deb_raw) : null;
-            if (!$dt_deb && $date_deb_raw) $dt_deb = DateTime::createFromFormat('d/m/Y', $date_deb_raw);
+            $dt_deb       = $parse_date($date_deb_raw);
+            $heure_deb    = get_field('eventbeginningtime');
+            $heure_fin    = get_field('eventendtime');
+            $adresse_txt  = $parse_address( get_field('eventaddress') );
+            $lien         = get_field('eventlink');
+            $details      = get_field('eventdetail');
+            $image_acf    = get_field('eventimage');
 
-            if ( $is_archive ) {
-                // --- MODE ARCHIVE : Ligne compacte (date + titre + pitch) ---
-                $details_archive = get_field('eventdetail');
-                $output .= '<div class="archive-item">';
-                    $output .= '<span class="archive-date">' . ($dt_deb ? ucfirst($fmt->format($dt_deb->getTimestamp())) : '') . '</span>';
-                    $output .= '<div class="archive-body">';
-                        $output .= '<h3 class="archive-title">' . esc_html($titre) . '</h3>';
-                        if ($details_archive) $output .= '<p class="archive-pitch">' . wp_trim_words(esc_html($details_archive), 15) . '</p>';
-                    $output .= '</div>';
+            $output .= '<article class="event-card">';
+                $output .= '<div class="event-header">';
+                    if ( $image_acf ) {
+                        $img_url = is_array($image_acf) ? $image_acf['url'] : $image_acf;
+                        $output .= '<img src="' . esc_url($img_url) . '" class="event-img" alt="' . esc_attr($titre) . '">';
+                    } else {
+                        $stored_id = get_post_meta( get_the_ID(), '_event_fallback_image_id', true );
+                        if ( $stored_id && wp_get_attachment_url($stored_id) ) {
+                            $output .= wp_get_attachment_image( $stored_id, 'large', false, array('class' => 'event-img') );
+                        } elseif ( !empty($fallback_images) ) {
+                            $img_id = $fallback_images[ $fallback_index % count($fallback_images) ];
+                            $fallback_index++;
+                            update_post_meta( get_the_ID(), '_event_fallback_image_id', $img_id );
+                            $output .= wp_get_attachment_image( $img_id, 'large', false, array('class' => 'event-img') );
+                        }
+                    }
+                    $output .= '<div class="event-overlay"></div>';
+                    if ($type) {
+                        $label = is_array($type) ? $type['label'] : $type;
+                        $output .= '<span class="event-badge">' . esc_html($label) . '</span>';
+                    }
                 $output .= '</div>';
-            } else {
-                // --- MODE NORMAL : Cartes Dark Mode avec images ---
-                $heure_deb = get_field('eventbeginningtime');
-                $heure_fin = get_field('eventendtime');
-                $adresse   = get_field('eventaddress');
-                $lien      = get_field('eventlink');
-                $details   = get_field('eventdetail');
-                $image_acf = get_field('eventimage');
 
-                $output .= '<article class="event-card">';
-                    $output .= '<div class="event-header">';
-                        if ( $image_acf ) {
-                            $img_url = is_array($image_acf) ? $image_acf['url'] : $image_acf;
-                            $output .= '<img src="' . esc_url($img_url) . '" class="event-img" alt="' . esc_attr($titre) . '">';
-                        } else {
-                            // Image persistante : on vérifie le meta avant de piocher dans le pool
-                            $stored_id = get_post_meta( get_the_ID(), '_event_fallback_image_id', true );
-                            if ( $stored_id && wp_get_attachment_url( $stored_id ) ) {
-                                $output .= wp_get_attachment_image( $stored_id, 'large', false, array('class' => 'event-img') );
-                            } elseif ( !empty($fallback_images) ) {
-                                $img_id = $fallback_images[ $fallback_index % count($fallback_images) ];
-                                $fallback_index++;
-                                update_post_meta( get_the_ID(), '_event_fallback_image_id', $img_id );
-                                $output .= wp_get_attachment_image( $img_id, 'large', false, array('class' => 'event-img') );
-                            }
+                $output .= '<div class="event-content">';
+                    $output .= '<h2 class="event-title">' . esc_html($titre) . '</h2>';
+                    $output .= '<div class="event-meta">';
+                        if ($dt_deb) {
+                            $dt_fin    = $parse_date($date_fin_raw);
+                            $date_text = ($dt_fin && $date_deb_raw !== $date_fin_raw)
+                                ? 'Du ' . $fmt->format($dt_deb->getTimestamp()) . ' au ' . $fmt->format($dt_fin->getTimestamp())
+                                : $fmt->format($dt_deb->getTimestamp());
+                            $output .= '<p><i class="fa-regular fa-calendar"></i> ' . $date_text . '</p>';
                         }
-                        $output .= '<div class="event-overlay"></div>';
-                        if ($type) {
-                            $label = is_array($type) ? $type['label'] : $type;
-                            $output .= '<span class="event-badge">' . esc_html($label) . '</span>';
+                        if ($heure_deb) {
+                            $heure_text = $heure_fin
+                                ? 'De ' . esc_html($heure_deb) . ' à ' . esc_html($heure_fin)
+                                : 'À partir de ' . esc_html($heure_deb);
+                            $output .= '<p><i class="fa-regular fa-clock"></i> ' . $heure_text . '</p>';
+                        }
+                        if ($adresse_txt) {
+                            $output .= '<p><i class="fa-solid fa-location-dot"></i> ' . esc_html($adresse_txt) . '</p>';
                         }
                     $output .= '</div>';
-                    
-                    $output .= '<div class="event-content">';
-                        $output .= '<h2 class="event-title">' . esc_html($titre) . '</h2>';
-                        $output .= '<div class="event-meta">';
-                            if ($dt_deb) {
-                                $dt_fin = null;
-                                if ($date_fin_raw) {
-                                    $dt_fin = DateTime::createFromFormat('Ymd', $date_fin_raw);
-                                    if (!$dt_fin) $dt_fin = DateTime::createFromFormat('d/m/Y', $date_fin_raw);
-                                }
-                                $date_text = ($dt_fin && $date_deb_raw !== $date_fin_raw)
-                                    ? 'Du ' . $fmt->format($dt_deb->getTimestamp()) . ' au ' . $fmt->format($dt_fin->getTimestamp())
-                                    : $fmt->format($dt_deb->getTimestamp());
-                                $output .= '<p><i class="fa-regular fa-calendar"></i> ' . $date_text . '</p>';
-                            }
-                            if ($heure_deb) {
-                                $heure_text = $heure_fin
-                                    ? 'De ' . esc_html($heure_deb) . ' à ' . esc_html($heure_fin)
-                                    : esc_html($heure_deb);
-                                $output .= '<p><i class="fa-regular fa-clock"></i> ' . $heure_text . '</p>';
-                            }
-                            if ($adresse) $output .= '<p><i class="fa-solid fa-location-dot"></i> ' . esc_html(is_array($adresse) ? $adresse['address'] : $adresse) . '</p>';
-                        $output .= '</div>';
-                        if ($details) $output .= '<div class="event-excerpt">' . wp_trim_words(esc_html($details), 18) . '</div>';
-                        if ($lien) $output .= '<a href="'.esc_url($lien).'" target="_blank" class="event-button">En savoir plus</a>';
-                    $output .= '</div>';
-                $output .= '</article>';
-            }
+                    if ($details) $output .= '<div class="event-excerpt">' . wp_trim_words(esc_html($details), 18) . '</div>';
+                    if ($lien) $output .= '<a href="' . esc_url($lien) . '" target="_blank" class="event-button">En savoir plus</a>';
+                $output .= '</div>';
+            $output .= '</article>';
         }
         wp_reset_postdata();
     } else {
-        $msg = $is_archive ? "Aucune archive pour le moment." : "Aucun événement prévu pour le moment.";
-        $output .= '<p class="no-event">' . $msg . '</p>';
+        $output .= '<p class="no-event">Aucun événement prévu pour le moment.</p>';
     }
 
     $output .= '</div>';
