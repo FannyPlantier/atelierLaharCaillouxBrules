@@ -123,7 +123,21 @@ add_action('init', 'lahar_register_events');
 
     $query = new WP_Query($args);
     $fmt = new IntlDateFormatter('fr_FR', IntlDateFormatter::LONG, IntlDateFormatter::NONE);
-    
+
+    // Pré-chargement des images de fallback (hors mode archive)
+    $fallback_images = array();
+    $fallback_index  = 0;
+    if ( !$is_archive ) {
+        $all_img_ids = get_posts( array(
+            'post_type'      => 'attachment',
+            'post_mime_type' => 'image',
+            'posts_per_page' => -1,
+            'fields'         => 'ids',
+        ) );
+        shuffle( $all_img_ids );
+        $fallback_images = $all_img_ids;
+    }
+
     $grid_class = $is_archive ? 'agenda-archive-list' : 'agenda-grid';
     $output = '<div class="' . $grid_class . '">';
 
@@ -165,9 +179,10 @@ add_action('init', 'lahar_register_events');
                         if ( $image_acf ) {
                             $img_url = is_array($image_acf) ? $image_acf['url'] : $image_acf;
                             $output .= '<img src="' . esc_url($img_url) . '" class="event-img" alt="' . esc_attr($titre) . '">';
-                        } else {
-                            $random_imgs = get_posts(array('post_type'=>'attachment','post_mime_type'=>'image','posts_per_page'=>1,'orderby'=>'rand'));
-                            if ($random_imgs) $output .= wp_get_attachment_image($random_imgs[0]->ID,'large',false,array('class'=>'event-img'));
+                        } elseif ( !empty($fallback_images) ) {
+                            $img_id = $fallback_images[ $fallback_index % count($fallback_images) ];
+                            $fallback_index++;
+                            $output .= wp_get_attachment_image( $img_id, 'large', false, array('class' => 'event-img') );
                         }
                         $output .= '<div class="event-overlay"></div>';
                         if ($type) {
@@ -182,10 +197,10 @@ add_action('init', 'lahar_register_events');
                             if ($dt_deb) {
                                 $dt_fin = $date_fin_raw ? DateTime::createFromFormat('Ymd', $date_fin_raw) : null;
                                 $date_text = ($dt_fin && $date_deb_raw !== $date_fin_raw) ? 'Du '.$fmt->format($dt_deb->getTimestamp()).' au '.$fmt->format($dt_fin->getTimestamp()) : $fmt->format($dt_deb->getTimestamp());
-                                $output .= '<p><span>📅</span> ' . $date_text . '</p>';
+                                $output .= '<p><i class="fa-regular fa-calendar"></i> ' . $date_text . '</p>';
                             }
-                            if ($heure_deb) $output .= '<p><span>🕒</span> ' . esc_html($heure_deb) . ($heure_fin ? ' - '.esc_html($heure_fin) : '') . '</p>';
-                            if ($adresse) $output .= '<p><span>📍</span> ' . esc_html(is_array($adresse) ? $adresse['address'] : $adresse) . '</p>';
+                            if ($heure_deb) $output .= '<p><i class="fa-regular fa-clock"></i> ' . esc_html($heure_deb) . ($heure_fin ? ' - '.esc_html($heure_fin) : '') . '</p>';
+                            if ($adresse) $output .= '<p><i class="fa-solid fa-location-dot"></i> ' . esc_html(is_array($adresse) ? $adresse['address'] : $adresse) . '</p>';
                         $output .= '</div>';
                         if ($details) $output .= '<div class="event-excerpt">' . wp_trim_words(esc_html($details), 18) . '</div>';
                         if ($lien) $output .= '<a href="'.esc_url($lien).'" target="_blank" class="event-button">En savoir plus</a>';
