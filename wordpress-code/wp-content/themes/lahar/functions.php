@@ -62,6 +62,19 @@ add_action( 'wp_enqueue_scripts', function() {
 }, 100 );
 
 /* ==========================================================================
+   3b. CORRECTION DES LIENS D'ANCRE DANS LE MENU
+   ========================================================================== */
+add_filter( 'wp_nav_menu_objects', function( $items ) {
+    $home_url = trailingslashit( home_url() );
+    foreach ( $items as $item ) {
+        if ( isset( $item->url ) && str_starts_with( $item->url, '#' ) ) {
+            $item->url = $home_url . $item->url;
+        }
+    }
+    return $items;
+} );
+
+/* ==========================================================================
    4. DÉCLARATION DES CPT
    ========================================================================== */
    // 1. Déclaration du Custom Post Type "Événements"
