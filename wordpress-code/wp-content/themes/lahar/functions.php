@@ -112,14 +112,22 @@ function lahar_liste_evenements_shortcode( $atts ) {
         'post_status'    => 'publish',
         'meta_query'     => array(
             'relation' => 'OR',
-            // Cas 1 : date de fin renseignée → on s'en sert
+            // Cas 1 : date de fin renseignée et non vide → on s'en sert
             array(
-                'key'     => 'eventenddate',
-                'compare' => $is_archive ? '<' : '>=',
-                'value'   => $today,
-                'type'    => 'NUMERIC',
+                'relation' => 'AND',
+                array(
+                    'key'     => 'eventenddate',
+                    'value'   => '',
+                    'compare' => '!=',
+                ),
+                array(
+                    'key'     => 'eventenddate',
+                    'compare' => $is_archive ? '<' : '>=',
+                    'value'   => $today,
+                    'type'    => 'NUMERIC',
+                ),
             ),
-            // Cas 2 : pas de date de fin (vide ou absente) → on utilise la date de début
+            // Cas 2 : date de fin absente ou vide → on utilise la date de début
             array(
                 'relation' => 'AND',
                 array(
