@@ -296,7 +296,8 @@ function lahar_liste_evenements_shortcode( $atts ) {
                     $output .= '<div class="event-overlay"></div>';
                     if ($type) {
                         $label = is_array($type) ? $type['label'] : $type;
-                        $output .= '<span class="event-badge">' . esc_html($label) . '</span>';
+                        $slug  = sanitize_title($label);
+                        $output .= '<span class="event-badge event-badge--' . esc_attr($slug) . '">' . esc_html($label) . '</span>';
                     }
                 $output .= '</div>';
 
@@ -320,7 +321,7 @@ function lahar_liste_evenements_shortcode( $atts ) {
                             $output .= '<p><i class="fa-solid fa-location-dot"></i> ' . esc_html($adresse_txt) . '</p>';
                         }
                     $output .= '</div>';
-                    if ($details) $output .= '<div class="event-excerpt">' . wp_trim_words(esc_html($details), 18) . '</div>';
+                    if ($details) $output .= '<div class="event-excerpt">' . nl2br(esc_html($details)) . '</div>';
                     if ($lien) $output .= '<a href="' . esc_url($lien) . '" target="_blank" class="event-button">En savoir plus</a>';
                 $output .= '</div>';
             $output .= '</article>';
