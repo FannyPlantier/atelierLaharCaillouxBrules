@@ -214,7 +214,7 @@ function lahar_liste_evenements_shortcode( $atts ) {
                         $output .= '<div class="archive-body">';
                             $output .= '<h3 class="archive-title">' . esc_html($ev['titre']) . '</h3>';
                             if ($ev['adresse']) {
-                                $output .= '<p class="archive-address"><i class="fa-solid fa-location-dot"></i> ' . esc_html($ev['adresse']) . '</p>';
+                                $output .= '<p class="archive-address">' . esc_html($ev['adresse']) . '</p>';
                             }
                             if ($ev['details']) {
                                 $output .= '<div class="archive-pitch">' . nl2br(esc_html($ev['details'])) . '</div>';
