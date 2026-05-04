@@ -111,11 +111,28 @@ function lahar_liste_evenements_shortcode( $atts ) {
         'order'          => $is_archive ? 'DESC' : 'ASC',
         'post_status'    => 'publish',
         'meta_query'     => array(
+            'relation' => 'OR',
+            // Cas 1 : date de fin renseignée → on s'en sert
             array(
                 'key'     => 'eventenddate',
                 'compare' => $is_archive ? '<' : '>=',
                 'value'   => $today,
                 'type'    => 'NUMERIC',
+            ),
+            // Cas 2 : pas de date de fin (vide ou absente) → on utilise la date de début
+            array(
+                'relation' => 'AND',
+                array(
+                    'relation' => 'OR',
+                    array( 'key' => 'eventenddate', 'compare' => 'NOT EXISTS' ),
+                    array( 'key' => 'eventenddate', 'value' => '', 'compare' => '=' ),
+                ),
+                array(
+                    'key'     => 'eventbeginningdate',
+                    'compare' => $is_archive ? '<' : '>=',
+                    'value'   => $today,
+                    'type'    => 'NUMERIC',
+                ),
             ),
         ),
     );
