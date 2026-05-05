@@ -940,7 +940,7 @@ h2 {
 .boutique-hero h1 {
     font-size: 4rem !important;
     font-weight: 800 !important;
-    color: white !important;
+    color: var(--button-border-hover) !important;
     margin: 0 0 1.5rem !important;
 }
 
