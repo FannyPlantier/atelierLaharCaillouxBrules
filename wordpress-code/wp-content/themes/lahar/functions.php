@@ -101,60 +101,6 @@ function lahar_register_events() {
 }
 add_action('init', 'lahar_register_events');
 
-// 2. Déclaration du Custom Post Type "Galeries"
-function lahar_register_galeries() {
-    $labels = array(
-        'name'          => 'Galeries',
-        'singular_name' => 'Galerie',
-        'add_new'       => 'Ajouter une galerie',
-        'all_items'     => 'Toutes les galeries',
-        'edit_item'     => 'Modifier la galerie',
-    );
-    $args = array(
-        'labels'      => $labels,
-        'public'      => false,
-        'show_ui'     => true,
-        'menu_icon'   => 'dashicons-format-gallery',
-        'supports'    => array('title'),
-        'rewrite'     => false,
-        'show_in_rest'=> false,
-    );
-    register_post_type('galerie', $args);
-}
-add_action('init', 'lahar_register_galeries');
-
-// 3. Champ ACF galerie (enregistrement par code)
-add_action('acf/init', function() {
-    if ( !function_exists('acf_add_local_field_group') ) return;
-    acf_add_local_field_group(array(
-        'key'    => 'group_galerie_photos',
-        'title'  => 'Photos de la galerie',
-        'fields' => array(
-            array(
-                'key'           => 'field_galerie_images',
-                'label'         => 'Photos',
-                'name'          => 'gallery_images',
-                'type'          => 'gallery',
-                'return_format' => 'array',
-                'preview_size'  => 'medium',
-                'insert'        => 'append',
-                'library'       => 'all',
-                'mime_types'    => 'jpg,jpeg,png,webp',
-            ),
-        ),
-        'location' => array(
-            array(
-                array(
-                    'param'    => 'post_type',
-                    'operator' => '==',
-                    'value'    => 'galerie',
-                ),
-            ),
-        ),
-        'position' => 'normal',
-        'style'    => 'default',
-    ));
-});
 
 /* ==========================================================================
    5. SHORTCODE POUR AFFICHER LES ÉVÉNEMENTS
@@ -429,57 +375,4 @@ function lahar_liste_evenements_shortcode( $atts ) {
 }
 add_shortcode('mon_agenda', 'lahar_liste_evenements_shortcode');
 
-/* ==========================================================================
-   6. SHORTCODE GALERIE PHOTOS
-   ========================================================================== */
-function lahar_galerie_shortcode( $atts ) {
-    if ( !function_exists('get_field') ) return '';
-
-    $atts = shortcode_atts( array(
-        'slug' => '',
-        'id'   => 0,
-    ), $atts );
-
-    // Trouve le post galerie par slug ou ID
-    if ( $atts['id'] ) {
-        $post = get_post( intval($atts['id']) );
-        if ( !$post || $post->post_type !== 'galerie' ) return '';
-    } elseif ( $atts['slug'] ) {
-        $q = new WP_Query( array(
-            'post_type'      => 'galerie',
-            'name'           => sanitize_title( $atts['slug'] ),
-            'posts_per_page' => 1,
-            'post_status'    => 'publish',
-        ) );
-        if ( !$q->have_posts() ) return '';
-        $post = $q->posts[0];
-    } else {
-        return '';
-    }
-
-    $images = get_field('gallery_images', $post->ID);
-    if ( empty($images) ) return '';
-
-    $gallery_id = 'galerie-' . $post->ID;
-    $output     = '<div class="galerie-grid" id="' . esc_attr($gallery_id) . '">';
-
-    foreach ( $images as $image ) {
-        $full_url = esc_url( $image['url'] );
-        $alt      = esc_attr( $image['alt'] ?: $image['title'] );
-
-        $output .= '<a href="' . $full_url . '" class="galerie-item" data-gallery="' . esc_attr($gallery_id) . '" data-glightbox="alt: ' . $alt . '">';
-        // wp_get_attachment_image gère srcset + lazy loading automatiquement
-        $output .= wp_get_attachment_image( $image['ID'], 'medium_large', false, array(
-            'class'   => 'galerie-thumb',
-            'loading' => 'lazy',
-            'alt'     => $alt,
-        ) );
-        $output .= '<div class="galerie-overlay"><i class="fa-solid fa-magnifying-glass-plus"></i></div>';
-        $output .= '</a>';
-    }
-
-    $output .= '</div>';
-    return $output;
-}
-add_shortcode('ma_galerie', 'lahar_galerie_shortcode');
 
