@@ -799,28 +799,104 @@ h2 {
 }
 
 /* ==========================================================================
-   8. GALERIE PHOTOS (bloc natif WordPress)
+   8. PAGE GALERIES
    ========================================================================== */
+
+/* Titre de section : ajouter la classe "titre-galerie" dans l'éditeur */
+.titre-galerie {
+    display: flex !important;
+    align-items: center;
+    gap: 20px;
+    color: white !important;
+    font-size: 160% !important;
+    margin: 6% 0 1.5% !important;
+    margin-left: 0 !important;
+    border: none !important;
+    padding: 0 !important;
+    width: 100% !important;
+    line-height: 1.2 !important;
+}
+
+.titre-galerie::before {
+    content: '';
+    display: block;
+    width: 60px;
+    height: 2px;
+    background-color: var(--secondary-title);
+    flex-shrink: 0;
+}
+
+/* Galerie WordPress — grille */
 .wp-block-gallery {
-    margin-top: 4% !important;
+    margin-top: 3% !important;
+    margin-bottom: 7% !important;
+    gap: 10px !important;
+}
+
+.wp-block-gallery .wp-block-image {
+    border-radius: 8px;
+    overflow: hidden;
+    outline: 2px solid transparent;
+    outline-offset: 0;
+    transition: outline-color 0.3s ease;
+    background-color: var(--section);
+    position: relative;
+}
+
+.wp-block-gallery .wp-block-image:hover {
+    outline-color: var(--secondary-title);
 }
 
 .wp-block-gallery .wp-block-image img {
-    border-radius: 6px;
+    border-radius: 8px;
+    display: block;
+    width: 100%;
     transition: transform 0.4s ease;
 }
 
-.wp-block-gallery .wp-block-image img:hover {
-    transform: scale(1.03);
+.wp-block-gallery .wp-block-image:hover img {
+    transform: scale(1.04);
 }
 
-/* Lightbox native WP — fond sombre cohérent avec le thème */
+/* Caption révélée au hover */
+.wp-block-gallery .wp-block-image figcaption,
+.wp-block-gallery .wp-block-image .wp-element-caption {
+    position: absolute !important;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: linear-gradient(transparent, rgba(0, 0, 0, 0.75)) !important;
+    color: white !important;
+    font-size: 85%;
+    padding: 24px 14px 12px !important;
+    margin: 0 !important;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.wp-block-gallery .wp-block-image:hover figcaption,
+.wp-block-gallery .wp-block-image:hover .wp-element-caption {
+    opacity: 1;
+}
+
+/* Lightbox native WP — fond sombre */
 .wp-lightbox-overlay {
     background: rgba(0, 0, 0, 0.92) !important;
 }
 
 @media (max-width: 768px) {
+    .titre-galerie {
+        font-size: 130% !important;
+        margin: 10% 0 4% !important;
+        gap: 14px;
+    }
+
+    .titre-galerie::before {
+        width: 40px;
+    }
+
     .wp-block-gallery {
-        margin-top: 8% !important;
+        gap: 6px !important;
+        margin-bottom: 12% !important;
     }
 }
