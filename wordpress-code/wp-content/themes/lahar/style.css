@@ -826,56 +826,67 @@ h2 {
     flex-shrink: 0;
 }
 
-/* Galerie WordPress — grille */
-.wp-block-gallery {
+/* Galerie WordPress — grille 3 colonnes forcée */
+.wp-block-gallery.has-nested-images {
+    display: grid !important;
+    grid-template-columns: repeat(3, 1fr) !important;
+    gap: 10px !important;
     margin-top: 3% !important;
     margin-bottom: 7% !important;
-    gap: 10px !important;
+    flex-wrap: unset !important;
 }
 
-.wp-block-gallery .wp-block-image {
-    border-radius: 8px;
+.wp-block-gallery.has-nested-images figure.wp-block-image {
+    width: 100% !important;
+    max-width: 100% !important;
+    flex-grow: 0 !important;
+    flex-basis: auto !important;
+    margin: 0 !important;
+    aspect-ratio: 1 / 1;
     overflow: hidden;
+    border-radius: 8px;
+    background-color: var(--section);
+    position: relative;
     outline: 2px solid transparent;
     outline-offset: 0;
     transition: outline-color 0.3s ease;
-    background-color: var(--section);
-    position: relative;
 }
 
-.wp-block-gallery .wp-block-image:hover {
+.wp-block-gallery.has-nested-images figure.wp-block-image:hover {
     outline-color: var(--secondary-title);
 }
 
-.wp-block-gallery .wp-block-image img {
+.wp-block-gallery.has-nested-images figure.wp-block-image img {
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover !important;
     border-radius: 8px;
-    display: block;
-    width: 100%;
     transition: transform 0.4s ease;
 }
 
-.wp-block-gallery .wp-block-image:hover img {
-    transform: scale(1.04);
+.wp-block-gallery.has-nested-images figure.wp-block-image:hover img {
+    transform: scale(1.05);
 }
 
 /* Caption révélée au hover */
-.wp-block-gallery .wp-block-image figcaption,
-.wp-block-gallery .wp-block-image .wp-element-caption {
+.wp-block-gallery.has-nested-images figure.wp-block-image figcaption,
+.wp-block-gallery.has-nested-images figure.wp-block-image .wp-element-caption {
     position: absolute !important;
     bottom: 0;
     left: 0;
     right: 0;
-    background: linear-gradient(transparent, rgba(0, 0, 0, 0.75)) !important;
+    background: linear-gradient(transparent, rgba(0, 0, 0, 0.78)) !important;
     color: white !important;
     font-size: 85%;
-    padding: 24px 14px 12px !important;
+    padding: 28px 14px 12px !important;
     margin: 0 !important;
+    text-align: left !important;
     opacity: 0;
     transition: opacity 0.3s ease;
 }
 
-.wp-block-gallery .wp-block-image:hover figcaption,
-.wp-block-gallery .wp-block-image:hover .wp-element-caption {
+.wp-block-gallery.has-nested-images figure.wp-block-image:hover figcaption,
+.wp-block-gallery.has-nested-images figure.wp-block-image:hover .wp-element-caption {
     opacity: 1;
 }
 
@@ -895,7 +906,8 @@ h2 {
         width: 40px;
     }
 
-    .wp-block-gallery {
+    .wp-block-gallery.has-nested-images {
+        grid-template-columns: repeat(2, 1fr) !important;
         gap: 6px !important;
         margin-bottom: 12% !important;
     }
