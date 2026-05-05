@@ -917,6 +917,10 @@ h2 {
    9. PAGE BOUTIQUE
    ========================================================================== */
 
+.page-id-27 .wp-block-post-title {
+    margin-top: 8% !important;
+}
+
 .boutique-hero {
     display: flex !important;
     flex-direction: column;
@@ -964,6 +968,11 @@ h2 {
     text-transform: uppercase !important;
     color: var(--label) !important;
     margin-bottom: 0.75rem !important;
+}
+
+.boutique-hero .wp-block-buttons {
+    justify-content: center !important;
+    width: 100% !important;
 }
 
 /* Bouton "Contactez-moi" */
