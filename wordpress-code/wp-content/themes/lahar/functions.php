@@ -483,15 +483,3 @@ function lahar_galerie_shortcode( $atts ) {
 }
 add_shortcode('ma_galerie', 'lahar_galerie_shortcode');
 
-// Enqueue GLightbox (lightbox légère, sans jQuery)
-add_action('wp_enqueue_scripts', function() {
-    wp_enqueue_style( 'glightbox', 'https://cdn.jsdelivr.net/npm/glightbox@3.3.0/dist/css/glightbox.min.css', array(), '3.3.0' );
-    wp_enqueue_script( 'glightbox', 'https://cdn.jsdelivr.net/npm/glightbox@3.3.0/dist/js/glightbox.min.js', array(), '3.3.0', true );
-    wp_add_inline_script( 'glightbox',
-        'document.addEventListener("DOMContentLoaded",function(){' .
-        '  if(document.querySelector(".galerie-item")){' .
-        '    GLightbox({selector:".galerie-item",touchNavigation:true,loop:true});' .
-        '  }' .
-        '});'
-    );
-});
