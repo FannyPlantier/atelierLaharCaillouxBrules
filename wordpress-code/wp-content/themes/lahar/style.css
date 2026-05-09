@@ -991,3 +991,14 @@ h2 {
     background-color: var(--button-border-hover) !important;
     color: white !important;
 }
+
+@media (max-width: 768px) {
+    .page-id-27 .wp-block-post-title {
+        font-size: 2.5rem !important;
+        margin-top: 20% !important;
+    }
+
+    .boutique-hero h1 {
+        font-size: 2.5rem !important;
+    }
+}
