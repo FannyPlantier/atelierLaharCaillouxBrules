@@ -49,3 +49,31 @@
         });
     });
 });
+
+/* ==========================================================================
+   PLAYLIST VIDÉOS
+   ========================================================================== */
+document.addEventListener('DOMContentLoaded', function() {
+    const player = document.getElementById('main-player');
+    const mainTitle = document.getElementById('main-video-title');
+    const items = document.querySelectorAll('.playlist-item');
+
+    if (!player || !items.length) return;
+
+    items.forEach(function(item) {
+        item.addEventListener('click', function() {
+            player.pause();
+            player.src = this.dataset.src;
+            if (this.dataset.poster) player.poster = this.dataset.poster;
+            player.load();
+            player.play();
+
+            if (mainTitle) mainTitle.textContent = this.dataset.title;
+
+            items.forEach(function(i) { i.classList.remove('active'); });
+            this.classList.add('active');
+
+            player.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        });
+    });
+});

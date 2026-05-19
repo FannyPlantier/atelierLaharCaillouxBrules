@@ -375,4 +375,100 @@ function lahar_liste_evenements_shortcode( $atts ) {
 }
 add_shortcode('mon_agenda', 'lahar_liste_evenements_shortcode');
 
+/* ==========================================================================
+   6. CPT VIDÉOS
+   ========================================================================== */
+function lahar_register_videos() {
+    register_post_type('video', array(
+        'labels' => array(
+            'name'          => 'Vidéos',
+            'singular_name' => 'Vidéo',
+            'add_new'       => 'Ajouter une vidéo',
+            'all_items'     => 'Toutes les vidéos',
+            'edit_item'     => 'Modifier la vidéo',
+        ),
+        'public'       => true,
+        'has_archive'  => false,
+        'menu_icon'    => 'dashicons-video-alt3',
+        'supports'     => array('title', 'thumbnail'),
+        'rewrite'      => false,
+        'show_in_rest' => true,
+    ));
+}
+add_action('init', 'lahar_register_videos');
+
+add_action('acf/init', function() {
+    acf_add_local_field_group(array(
+        'key'    => 'group_video',
+        'title'  => 'Informations vidéo',
+        'fields' => array(
+            array(
+                'key'   => 'field_video_url',
+                'label' => 'URL de la vidéo (Cloudflare R2)',
+                'name'  => 'video_url',
+                'type'  => 'url',
+            ),
+        ),
+        'location' => array(array(array(
+            'param'    => 'post_type',
+            'operator' => '==',
+            'value'    => 'video',
+        ))),
+    ));
+});
+
+/* ==========================================================================
+   7. SHORTCODE VIDÉOS [mes_videos]
+   ========================================================================== */
+function lahar_videos_shortcode() {
+    $query = new WP_Query(array(
+        'post_type'      => 'video',
+        'posts_per_page' => -1,
+        'orderby'        => 'menu_order date',
+        'order'          => 'ASC',
+    ));
+
+    if ( !$query->have_posts() ) return '<p class="no-event">Aucune vidéo disponible.</p>';
+
+    $items = array();
+    while ( $query->have_posts() ) {
+        $query->the_post();
+        $items[] = array(
+            'title' => get_the_title(),
+            'url'   => get_field('video_url'),
+            'thumb' => get_the_post_thumbnail_url(get_the_ID(), 'large') ?: '',
+        );
+    }
+    wp_reset_postdata();
+
+    $first   = $items[0];
+    $output  = '<div class="video-page">';
+
+    $output .= '<div class="video-main">';
+    $output .= '<video id="main-player" src="' . esc_url($first['url']) . '" controls preload="metadata"' . ($first['thumb'] ? ' poster="' . esc_url($first['thumb']) . '"' : '') . '></video>';
+    $output .= '<p id="main-video-title">' . esc_html($first['title']) . '</p>';
+    $output .= '</div>';
+
+    if ( count($items) > 1 ) {
+        $output .= '<div class="video-playlist">';
+        foreach ( $items as $i => $item ) {
+            $active  = $i === 0 ? ' active' : '';
+            $output .= '<div class="playlist-item' . $active . '" data-src="' . esc_url($item['url']) . '" data-title="' . esc_attr($item['title']) . '" data-poster="' . esc_url($item['thumb']) . '">';
+            $output .= '<div class="playlist-thumb">';
+            if ( $item['thumb'] ) {
+                $output .= '<img src="' . esc_url($item['thumb']) . '" alt="' . esc_attr($item['title']) . '">';
+            }
+            $output .= '<span class="playlist-play-icon"><i class="fa-solid fa-play"></i></span>';
+            $output .= '</div>';
+            $output .= '<span class="playlist-title">' . esc_html($item['title']) . '</span>';
+            $output .= '</div>';
+        }
+        $output .= '</div>';
+    }
+
+    $output .= '</div>';
+    return $output;
+}
+add_shortcode('mes_videos', 'lahar_videos_shortcode');
+
 
