@@ -917,8 +917,8 @@ h2 {
    9. PAGE BOUTIQUE
    ========================================================================== */
 
-.page-id-27 .wp-block-post-title {
-    margin-top: 15% !important;
+body.page-id-27 {
+    padding-top: 12%;
 }
 
 .boutique-hero {
@@ -994,7 +994,6 @@ h2 {
 @media (max-width: 768px) {
     .page-id-27 .wp-block-post-title {
         font-size: x-large !important;
-        margin-top: 35% !important;
     }
 
     .boutique-hero h1 {

@@ -90,7 +90,7 @@ function lahar_register_events() {
     $args = array(
         'labels'             => $labels,
         'public'             => true,
-        'has_archive'        => true,
+        'has_archive'        => false,
         'menu_icon'          => 'dashicons-calendar-alt', // Petite icône calendrier
         'supports'           => array('title', 'editor', 'thumbnail'), // Titre, texte, image
         'rewrite'            => array('slug' => 'agenda'),
