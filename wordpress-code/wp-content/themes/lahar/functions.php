@@ -93,7 +93,7 @@ function lahar_register_events() {
         'has_archive'        => false,
         'menu_icon'          => 'dashicons-calendar-alt', // Petite icône calendrier
         'supports'           => array('title', 'editor', 'thumbnail'), // Titre, texte, image
-        'rewrite'            => array('slug' => 'agenda'),
+        'rewrite'            => array('slug' => 'evenement'),
         'show_in_rest'       => true, 
     );
 
