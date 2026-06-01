@@ -182,6 +182,7 @@
     .hero-title {
         font-size: 185%;
         letter-spacing: 0.03em;
+        white-space: normal;
     }
 
     /* --- SOUS-TITRE --- */
