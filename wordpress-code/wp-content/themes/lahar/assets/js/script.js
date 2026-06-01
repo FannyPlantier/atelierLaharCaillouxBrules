@@ -154,21 +154,26 @@ document.addEventListener('DOMContentLoaded', function() {
         var vid = document.createElement('video');
         vid.crossOrigin = 'anonymous';
         vid.muted = true;
+        vid.playsInline = true;
         vid.preload = 'metadata';
-        vid.src = img.dataset.video;
-        vid.addEventListener('loadeddata', function() {
-            vid.currentTime = 0.5;
+
+        vid.addEventListener('loadedmetadata', function() {
+            vid.currentTime = 1;
         });
+
         vid.addEventListener('seeked', function() {
             var canvas = document.createElement('canvas');
-            canvas.width  = vid.videoWidth;
-            canvas.height = vid.videoHeight;
+            canvas.width  = vid.videoWidth  || 640;
+            canvas.height = vid.videoHeight || 360;
             canvas.getContext('2d').drawImage(vid, 0, 0);
             try {
-                img.src = canvas.toDataURL('image/jpeg');
-            } catch(e) { /* CORS bloqué — miniature non disponible */ }
+                img.src = canvas.toDataURL('image/jpeg', 0.8);
+            } catch(e) { /* CORS bloqué */ }
             vid.src = '';
+            vid.load();
         });
+
+        vid.src = img.dataset.video;
         vid.load();
     });
 });

@@ -391,7 +391,7 @@ function lahar_register_videos() {
         'public'       => true,
         'has_archive'  => false,
         'menu_icon'    => 'dashicons-video-alt3',
-        'supports'     => array('title', 'thumbnail', 'page-attributes'),
+        'supports'     => array('title', 'thumbnail'),
         'rewrite'      => false,
         'show_in_rest' => true,
     ));
@@ -409,6 +409,15 @@ add_action('acf/init', function() {
                 'name'  => 'video_url',
                 'type'  => 'url',
             ),
+            array(
+                'key'          => 'field_video_position',
+                'label'        => 'Position dans la playlist (ordre manuel)',
+                'name'         => 'video_position',
+                'type'         => 'number',
+                'default_value' => 0,
+                'min'          => 0,
+                'instructions' => 'Utilisez [mes_videos order="manual"]. Plus le chiffre est petit, plus la vidéo apparaît en premier.',
+            ),
         ),
         'location' => array(array(array(
             'param'    => 'post_type',
@@ -425,7 +434,7 @@ function lahar_videos_shortcode( $atts ) {
     $atts = shortcode_atts( array( 'order' => 'recent' ), $atts );
 
     if ( $atts['order'] === 'manual' ) {
-        $orderby = 'menu_order';
+        $orderby = 'meta_value_num';
         $order   = 'ASC';
     } elseif ( $atts['order'] === 'old' ) {
         $orderby = 'date';
@@ -435,12 +444,16 @@ function lahar_videos_shortcode( $atts ) {
         $order   = 'DESC';
     }
 
-    $query = new WP_Query( array(
+    $query_args = array(
         'post_type'      => 'video',
         'posts_per_page' => -1,
         'orderby'        => $orderby,
         'order'          => $order,
-    ) );
+    );
+    if ( $atts['order'] === 'manual' ) {
+        $query_args['meta_key'] = 'video_position';
+    }
+    $query = new WP_Query( $query_args );
 
     if ( !$query->have_posts() ) return '<p class="no-event">Aucune vidéo disponible.</p>';
 
