@@ -77,6 +77,10 @@
     margin-bottom: 0;
 }
 
+.hero-title-br {
+    display: none;
+}
+
 .hero-title {
     font-family: var(--font-title);
     font-weight: 700;
@@ -179,8 +183,12 @@
         margin-top: 5%;
     }
 
+    .hero-title-br {
+        display: inline;
+    }
+
     .hero-title {
-        font-size: 185%;
+        font-size: 230%;
         letter-spacing: 0.03em;
         white-space: normal;
     }
