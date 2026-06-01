@@ -460,7 +460,7 @@ function lahar_videos_shortcode( $atts ) {
 
     $output .= '<div class="video-main">';
     $output .= '<p id="main-video-title">' . esc_html($first['title']) . '</p>';
-    $output .= '<video id="main-player" src="' . esc_url($first['url']) . '" crossorigin="anonymous" controls preload="metadata"' . ($first['thumb'] ? ' poster="' . esc_url($first['thumb']) . '"' : '') . '></video>';
+    $output .= '<video id="main-player" src="' . esc_url($first['url']) . '" controls preload="metadata"' . ($first['thumb'] ? ' poster="' . esc_url($first['thumb']) . '"' : '') . '></video>';
     $output .= '</div>';
 
     if ( count($items) > 1 ) {
