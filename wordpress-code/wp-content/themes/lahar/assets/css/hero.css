@@ -72,21 +72,19 @@
 }
 
 .hero-title-container {
-    width: 90%; 
-    margin-bottom: -6%; 
+    width: 90%;
+    margin-bottom: 2%;
 }
 
-.hero-title-svg {
-    width: 100%;
-    height: auto;
-    overflow: visible;
-}
-
-.hero-title-svg text {
-    fill: white;
+.hero-title {
     font-family: var(--font-title);
     font-weight: 800;
-    font-size: 370%; 
+    font-size: clamp(2.5rem, 6vw, 5rem);
+    color: white;
+    text-align: center;
+    margin: 0;
+    line-height: 1.1;
+    letter-spacing: 0.02em;
 }
 
 .hero-subtitle {
@@ -172,20 +170,11 @@
         font-size: 80% !important;
     }
 
-    /* --- TITRE SVG --- */
+    /* --- TITRE --- */
     .hero-title-container {
         width: 100%;
         margin-bottom: 0;
         margin-top: 5%;
-    }
-
-    .hero-title-svg {
-        width: 100%;
-        height: auto; /
-    }
-
-    .hero-title-svg text {
-        font-size: 435%;
     }
 
     /* --- SOUS-TITRE --- */

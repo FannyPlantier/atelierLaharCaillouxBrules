@@ -45,14 +45,7 @@
 
             <div class="hero-main-group">
                 <div class="hero-title-container">
-                    <svg viewBox="0 0 1200 300" class="hero-title-svg">
-                        <path id="curve" d="M50,250 Q600,20 1150,250" fill="transparent" />
-                        <text>
-                            <textPath xlink:href="#curve" startOffset="50%" text-anchor="middle">
-                                Atelier Cailloux Brûlés
-                            </textPath>
-                        </text>
-                    </svg>
+                    <p class="hero-title">Atelier Cailloux Brûlés</p>
                 </div>
                 <p class="hero-subtitle">Créations artisanales, brutes, craquelées et volcanistes</p>
             </div>
