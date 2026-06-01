@@ -155,22 +155,32 @@ document.addEventListener('DOMContentLoaded', function() {
         vid.crossOrigin = 'anonymous';
         vid.muted = true;
         vid.playsInline = true;
-        vid.preload = 'metadata';
+        vid.preload = 'auto';
 
-        vid.addEventListener('loadedmetadata', function() {
-            vid.currentTime = 1;
-        });
-
-        vid.addEventListener('seeked', function() {
+        function capture() {
+            if (!vid.videoWidth) return;
             var canvas = document.createElement('canvas');
-            canvas.width  = vid.videoWidth  || 640;
-            canvas.height = vid.videoHeight || 360;
+            canvas.width  = vid.videoWidth;
+            canvas.height = vid.videoHeight;
             canvas.getContext('2d').drawImage(vid, 0, 0);
             try {
-                img.src = canvas.toDataURL('image/jpeg', 0.8);
+                var data = canvas.toDataURL('image/jpeg', 0.8);
+                if (data.length > 1000) img.src = data;
             } catch(e) { /* CORS bloqué */ }
             vid.src = '';
             vid.load();
+        }
+
+        vid.addEventListener('loadedmetadata', function() {
+            vid.currentTime = 0;
+        });
+
+        vid.addEventListener('seeked', function() {
+            if (vid.videoWidth > 0) {
+                capture();
+            } else {
+                setTimeout(capture, 400);
+            }
         });
 
         vid.src = img.dataset.video;
