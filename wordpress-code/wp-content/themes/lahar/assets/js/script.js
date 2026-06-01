@@ -147,6 +147,33 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 /* ==========================================================================
+   MINIATURES AUTOMATIQUES (première image de la vidéo)
+   ========================================================================== */
+document.addEventListener('DOMContentLoaded', function() {
+    document.querySelectorAll('img.auto-thumb[data-video]').forEach(function(img) {
+        var vid = document.createElement('video');
+        vid.crossOrigin = 'anonymous';
+        vid.muted = true;
+        vid.preload = 'metadata';
+        vid.src = img.dataset.video;
+        vid.addEventListener('loadeddata', function() {
+            vid.currentTime = 0.5;
+        });
+        vid.addEventListener('seeked', function() {
+            var canvas = document.createElement('canvas');
+            canvas.width  = vid.videoWidth;
+            canvas.height = vid.videoHeight;
+            canvas.getContext('2d').drawImage(vid, 0, 0);
+            try {
+                img.src = canvas.toDataURL('image/jpeg');
+            } catch(e) { /* CORS bloqué — miniature non disponible */ }
+            vid.src = '';
+        });
+        vid.load();
+    });
+});
+
+/* ==========================================================================
    PLAYLIST VIDÉOS
    ========================================================================== */
 document.addEventListener('DOMContentLoaded', function() {

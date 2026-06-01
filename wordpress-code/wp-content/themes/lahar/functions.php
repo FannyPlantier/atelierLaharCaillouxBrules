@@ -391,7 +391,7 @@ function lahar_register_videos() {
         'public'       => true,
         'has_archive'  => false,
         'menu_icon'    => 'dashicons-video-alt3',
-        'supports'     => array('title', 'thumbnail'),
+        'supports'     => array('title', 'thumbnail', 'page-attributes'),
         'rewrite'      => false,
         'show_in_rest' => true,
     ));
@@ -419,15 +419,28 @@ add_action('acf/init', function() {
 });
 
 /* ==========================================================================
-   7. SHORTCODE VIDÉOS [mes_videos]
+   7. SHORTCODE VIDÉOS [mes_videos order="recent|old|manual"]
    ========================================================================== */
-function lahar_videos_shortcode() {
-    $query = new WP_Query(array(
+function lahar_videos_shortcode( $atts ) {
+    $atts = shortcode_atts( array( 'order' => 'recent' ), $atts );
+
+    if ( $atts['order'] === 'manual' ) {
+        $orderby = 'menu_order';
+        $order   = 'ASC';
+    } elseif ( $atts['order'] === 'old' ) {
+        $orderby = 'date';
+        $order   = 'ASC';
+    } else {
+        $orderby = 'date';
+        $order   = 'DESC';
+    }
+
+    $query = new WP_Query( array(
         'post_type'      => 'video',
         'posts_per_page' => -1,
-        'orderby'        => 'menu_order date',
-        'order'          => 'ASC',
-    ));
+        'orderby'        => $orderby,
+        'order'          => $order,
+    ) );
 
     if ( !$query->have_posts() ) return '<p class="no-event">Aucune vidéo disponible.</p>';
 
@@ -437,17 +450,17 @@ function lahar_videos_shortcode() {
         $items[] = array(
             'title' => get_the_title(),
             'url'   => get_field('video_url'),
-            'thumb' => get_the_post_thumbnail_url(get_the_ID(), 'large') ?: '',
+            'thumb' => get_the_post_thumbnail_url( get_the_ID(), 'large' ) ?: '',
         );
     }
     wp_reset_postdata();
 
-    $first   = $items[0];
-    $output  = '<div class="video-page">';
+    $first  = $items[0];
+    $output = '<div class="video-page">';
 
     $output .= '<div class="video-main">';
-    $output .= '<video id="main-player" src="' . esc_url($first['url']) . '" controls preload="metadata"' . ($first['thumb'] ? ' poster="' . esc_url($first['thumb']) . '"' : '') . '></video>';
     $output .= '<p id="main-video-title">' . esc_html($first['title']) . '</p>';
+    $output .= '<video id="main-player" src="' . esc_url($first['url']) . '" crossorigin="anonymous" controls preload="metadata"' . ($first['thumb'] ? ' poster="' . esc_url($first['thumb']) . '"' : '') . '></video>';
     $output .= '</div>';
 
     if ( count($items) > 1 ) {
@@ -458,6 +471,8 @@ function lahar_videos_shortcode() {
             $output .= '<div class="playlist-thumb">';
             if ( $item['thumb'] ) {
                 $output .= '<img src="' . esc_url($item['thumb']) . '" alt="' . esc_attr($item['title']) . '">';
+            } else {
+                $output .= '<img class="auto-thumb" data-video="' . esc_url($item['url']) . '" src="" alt="' . esc_attr($item['title']) . '">';
             }
             $output .= '<span class="playlist-play-icon"><i class="fa-solid fa-play"></i></span>';
             $output .= '</div>';

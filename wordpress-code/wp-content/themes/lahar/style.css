@@ -1034,7 +1034,8 @@ h2 {
 }
 
 #main-video-title {
-    margin-top: 3% !important;
+    margin-bottom: 2% !important;
+    margin-top: 0 !important;
     font-size: large !important;
     color: white !important;
     font-weight: 600 !important;
