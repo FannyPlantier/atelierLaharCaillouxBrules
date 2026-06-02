@@ -453,7 +453,7 @@ h2 {
     }
 
     .form-equerre-wrapper {
-        border: solid 1px var(--secondary-title);
+        border: solid 1px var(--placeholder);
     }
 }
 
