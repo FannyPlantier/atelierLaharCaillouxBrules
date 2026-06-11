@@ -1034,17 +1034,7 @@ h2 {
 
 /* --- En-tête de section --- */
 .video-section-header {
-    text-align: center;
     margin-bottom: 40px;
-}
-
-.video-section-title {
-    font-family: var(--font-title);
-    font-size: 2rem;
-    letter-spacing: 0.15em;
-    color: var(--main-title);
-    text-transform: uppercase;
-    margin: 0;
 }
 
 /* --- Layout 2 colonnes --- */
