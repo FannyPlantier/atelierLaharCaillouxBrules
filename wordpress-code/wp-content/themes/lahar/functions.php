@@ -471,12 +471,21 @@ function lahar_videos_shortcode( $atts ) {
     $first  = $items[0];
     $output = '<div class="video-page">';
 
+    $output .= '<div class="video-section-header">';
+    $output .= '<h2 class="video-section-title">Vidéos</h2>';
+    $output .= '</div>';
+
+    $output .= '<div class="video-layout">';
+
     $output .= '<div class="video-main">';
-    $output .= '<p id="main-video-title">' . esc_html($first['title']) . '</p>';
+    $output .= '<div class="video-player-wrapper">';
     $output .= '<video id="main-player" src="' . esc_url($first['url']) . '" controls preload="metadata"' . ($first['thumb'] ? ' poster="' . esc_url($first['thumb']) . '"' : '') . '></video>';
+    $output .= '<p id="main-video-title">' . esc_html($first['title']) . '</p>';
+    $output .= '</div>';
     $output .= '</div>';
 
     if ( count($items) > 1 ) {
+        $output .= '<div class="video-sidebar">';
         $output .= '<div class="video-playlist">';
         foreach ( $items as $i => $item ) {
             $active  = $i === 0 ? ' active' : '';
@@ -493,9 +502,11 @@ function lahar_videos_shortcode( $atts ) {
             $output .= '</div>';
         }
         $output .= '</div>';
+        $output .= '</div>';
     }
 
-    $output .= '</div>';
+    $output .= '</div>'; // .video-layout
+    $output .= '</div>'; // .video-page
     return $output;
 }
 add_shortcode('mes_videos', 'lahar_videos_shortcode');

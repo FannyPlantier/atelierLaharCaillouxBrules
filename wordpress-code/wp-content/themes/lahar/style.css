@@ -1027,33 +1027,90 @@ h2 {
    ========================================================================== */
 
 .video-page {
-    max-width: 1100px;
+    max-width: 1200px;
     margin: 0 auto;
     padding: 3% 3% 8%;
+}
+
+/* --- En-tête de section --- */
+.video-section-header {
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.video-section-title {
+    font-family: var(--font-title);
+    font-size: 2rem;
+    letter-spacing: 0.15em;
+    color: var(--main-title);
+    text-transform: uppercase;
+    margin: 0;
+}
+
+/* --- Layout 2 colonnes --- */
+.video-layout {
+    display: flex;
+    gap: 24px;
+    align-items: flex-start;
+}
+
+.video-main {
+    flex: 1 1 0;
+    min-width: 0;
+}
+
+/* --- Player wrapper --- */
+.video-player-wrapper {
+    background: #111;
+    border-radius: 10px;
+    overflow: hidden;
 }
 
 #main-player {
     width: 100%;
     aspect-ratio: 16 / 9;
     background-color: #000;
-    border-radius: 8px;
     display: block;
 }
 
 #main-video-title {
-    margin-bottom: 2% !important;
-    margin-top: 0 !important;
-    font-size: large !important;
+    padding: 14px 18px 16px !important;
+    margin: 0 !important;
+    font-size: 1rem !important;
     color: var(--secondary-title) !important;
     font-weight: 600 !important;
     font-family: var(--font-title) !important;
+    border-top: 1px solid rgba(255, 255, 255, 0.06);
 }
 
+/* --- Sidebar playlist --- */
+.video-sidebar {
+    width: 300px;
+    flex-shrink: 0;
+    max-height: 560px;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: var(--secondary-title) transparent;
+}
+
+.video-sidebar::-webkit-scrollbar {
+    width: 4px;
+}
+
+.video-sidebar::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.video-sidebar::-webkit-scrollbar-thumb {
+    background: var(--secondary-title);
+    border-radius: 4px;
+}
+
+/* --- Playlist --- */
 .video-playlist {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-    gap: 16px;
-    margin-top: 3%;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
 }
 
 .playlist-item {
@@ -1064,6 +1121,9 @@ h2 {
     outline: 2px solid transparent;
     outline-offset: 0;
     transition: outline-color 0.3s ease;
+    display: flex;
+    flex-direction: row;
+    align-items: stretch;
 }
 
 .playlist-item:hover,
@@ -1073,6 +1133,8 @@ h2 {
 
 .playlist-thumb {
     position: relative;
+    width: 120px;
+    flex-shrink: 0;
     aspect-ratio: 16 / 9;
     overflow: hidden;
     background-color: #000;
@@ -1095,15 +1157,15 @@ h2 {
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    width: 44px;
-    height: 44px;
+    width: 36px;
+    height: 36px;
     border-radius: 50%;
     background: rgba(0, 0, 0, 0.55);
     display: flex;
     align-items: center;
     justify-content: center;
     color: white;
-    font-size: medium;
+    font-size: 0.8rem;
     opacity: 0;
     transition: opacity 0.3s ease;
 }
@@ -1118,18 +1180,47 @@ h2 {
 }
 
 .playlist-title {
-    display: block;
-    padding: 10px 12px;
+    display: flex;
+    align-items: center;
+    padding: 10px 14px;
     color: white;
-    font-size: small;
+    font-size: 0.82rem;
     font-weight: 500;
     line-height: 1.4;
+    flex: 1;
 }
 
-@media (max-width: 768px) {
+/* --- Mobile --- */
+@media (max-width: 900px) {
+    .video-layout {
+        flex-direction: column;
+    }
+
+    .video-sidebar {
+        width: 100%;
+        max-height: none;
+        overflow-y: visible;
+    }
+
     .video-playlist {
+        display: grid;
         grid-template-columns: repeat(2, 1fr);
         gap: 10px;
+    }
+
+    .playlist-item {
+        flex-direction: column;
+    }
+
+    .playlist-thumb {
+        width: 100%;
+        aspect-ratio: 16 / 9;
+    }
+
+    .playlist-title {
+        display: block;
+        padding: 10px 12px;
+        font-size: small;
     }
 }
 
