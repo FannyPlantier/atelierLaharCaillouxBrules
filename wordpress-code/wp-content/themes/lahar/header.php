@@ -47,7 +47,7 @@
                 <div class="hero-title-container">
                     <p class="hero-title">Atelier<br class="hero-title-br"> Cailloux Brûlés</p>
                 </div>
-                <p class="hero-subtitle">Créations artisanales, brutes, craquelées et volcanistes</p>
+                <p class="hero-subtitle">Créations artisanales, brutes, craquelées et vulcanistes</p>
             </div>
 
             <div class="hero-scroll">
