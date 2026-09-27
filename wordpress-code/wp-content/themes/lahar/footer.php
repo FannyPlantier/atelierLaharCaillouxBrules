@@ -8,7 +8,7 @@
             <a href="https://www.facebook.com/ateliercaillouxbrules" target="_blank" rel="noopener" class="social-link">
                 <i class="fa-brands fa-facebook fa-lg"></i>
             </a>
-            <a href="mailto:contact@caillouxbrules.fr" target="_blank" rel="noopener" class="social-link">
+            <a href="mailto:contact@ateliercaillouxbrules.fr" target="_blank" rel="noopener" class="social-link">
                 <i class="fa-regular fa-envelope fa-lg"></i>
             </a>
         </div>
